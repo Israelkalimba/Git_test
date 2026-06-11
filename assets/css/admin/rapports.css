@@ -1,0 +1,135 @@
+/* ============================================================
+   ISTAM PAIEMENT - RAPPORTS & STATISTIQUES
+   ============================================================ */
+
+.page-header { margin-bottom: 24px; }
+.page-title {
+    font-size: 1.65rem; font-weight: 700; color: var(--text-primary);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.page-title i { color: #3b82f6; }
+.page-subtitle { color: var(--text-secondary); font-size: 0.85rem; margin: 0; }
+
+/* ========== FILTRES ========== */
+.filtres-section {
+    background: var(--bg-card); border-radius: var(--radius-lg); padding: 18px 20px;
+    margin-bottom: 20px; border: 1px solid var(--border-color);
+}
+.filtre-label {
+    font-weight: 600; font-size: 0.72rem; color: var(--text-secondary);
+    margin-bottom: 4px; display: flex; align-items: center; gap: 5px;
+    white-space: nowrap;
+}
+
+/* ========== KPI GRID ========== */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+}
+.kpi-grid .kpi-card:nth-child(5),
+.kpi-grid .kpi-card:nth-child(6),
+.kpi-grid .kpi-card:nth-child(7) {
+    /* Les 3 derniers s'étendent sur une 2ème ligne */
+}
+
+.kpi-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+.kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+.kpi-icon {
+    width: 46px; height: 46px; min-width: 46px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; color: white;
+}
+.kpi-blue .kpi-icon { background: #3b82f6; }
+.kpi-green .kpi-icon { background: #10b981; }
+.kpi-red .kpi-icon { background: #ef4444; }
+.kpi-yellow .kpi-icon { background: #f59e0b; }
+.kpi-purple .kpi-icon { background: #8b5cf6; }
+.kpi-teal .kpi-icon { background: #14b8a6; }
+.kpi-indigo .kpi-icon { background: #6366f1; }
+
+.kpi-info h3 {
+    font-size: 1.25rem; font-weight: 700; margin: 0; line-height: 1.2;
+    color: var(--text-primary);
+}
+.kpi-info p {
+    font-size: 0.72rem; color: var(--text-secondary); margin: 3px 0 0;
+}
+
+/* ========== CHARTS ========== */
+.charts-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 18px;
+    margin-bottom: 24px;
+}
+.chart-card {
+    background: var(--bg-card); border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);
+}
+.chart-card-header {
+    padding: 18px 22px; border-bottom: 1px solid var(--border-color);
+}
+.chart-card-header h3 { font-size: 0.95rem; font-weight: 600; margin: 0; display: flex; align-items: center; gap: 8px; }
+.chart-card-body { padding: 20px 22px; }
+.chart-card-body canvas { max-height: 280px; width: 100% !important; }
+
+/* ========== TOPS GRID ========== */
+.tops-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+/* ========== MEDALS ========== */
+.medal {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 50%;
+    font-weight: 700; font-size: 0.8rem; color: white;
+}
+.medal-1 { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.medal-2 { background: linear-gradient(135deg, #94a3b8, #64748b); }
+.medal-3 { background: linear-gradient(135deg, #d97706, #92400e); }
+
+/* ========== STATUS PILLS ========== */
+.status-pill {
+    padding: 4px 12px; border-radius: 50px; font-size: 0.72rem; font-weight: 600; display: inline-block;
+}
+.pill-success { background: rgba(16,185,129,0.1); color: #10b981; }
+.pill-danger { background: rgba(239,68,68,0.1); color: #ef4444; }
+.pill-warning { background: rgba(245,158,11,0.1); color: #f59e0b; }
+
+.badge-count {
+    padding: 5px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 700;
+    background: rgba(59,130,246,0.08); color: #3b82f6;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1200px) {
+    .kpi-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 992px) {
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .charts-grid { grid-template-columns: 1fr; }
+    .tops-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 576px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+}

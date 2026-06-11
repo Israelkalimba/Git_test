@@ -1,0 +1,189 @@
+/* ============================================================
+   ISTAM PAIEMENT - PROFIL ADMINISTRATEUR
+   ============================================================ */
+
+.page-header { margin-bottom: 24px; }
+.page-title {
+    font-size: 1.65rem; font-weight: 700; color: var(--text-primary);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.page-title i { color: #6366f1; }
+.page-subtitle { color: var(--text-secondary); font-size: 0.85rem; margin: 0; }
+
+/* ========== PROFIL GRID ========== */
+.profil-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+/* ========== PROFIL CARD ========== */
+.profil-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    position: sticky;
+    top: 100px;
+}
+
+.profil-cover {
+    height: 100px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    position: relative;
+}
+.profil-cover::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: var(--bg-card);
+    border-radius: 50% 50% 0 0;
+}
+
+.profil-avatar-wrapper {
+    position: relative;
+    width: 110px;
+    height: 110px;
+    margin: -55px auto 0;
+    z-index: 2;
+}
+
+.profil-avatar {
+    width: 110px; height: 110px;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.8rem; color: #f59e0b;
+    border: 5px solid var(--bg-card);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.profil-status {
+    position: absolute;
+    bottom: 8px; right: 8px;
+    width: 22px; height: 22px;
+    background: #10b981;
+    border-radius: 50%;
+    border: 4px solid var(--bg-card);
+    animation: pulseStatus 2s infinite;
+}
+@keyframes pulseStatus {
+    0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(16,185,129,0); }
+}
+
+.profil-card-body {
+    padding: 20px 24px 0;
+}
+.profil-card-body h2 {
+    font-size: 1.3rem; font-weight: 700; margin-bottom: 6px;
+    color: var(--text-primary);
+}
+
+.profil-role {
+    margin-bottom: 8px;
+}
+.role-badge {
+    padding: 6px 16px; border-radius: 50px; font-size: 0.78rem; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+}
+.role-admin { background: rgba(30,41,59,0.08); color: #1e293b; border: 1px solid rgba(30,41,59,0.15); }
+
+.profil-email, .profil-date {
+    font-size: 0.83rem; color: var(--text-secondary);
+    margin-bottom: 6px; display: flex; align-items: center; gap: 8px; justify-content: center;
+}
+
+.profil-card-footer {
+    border-top: 1px solid var(--border-color);
+    margin-top: 18px;
+    padding: 16px 20px;
+}
+
+.profil-stats-row {
+    display: flex; justify-content: space-around; text-align: center;
+}
+.profil-stat-item h4 {
+    font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin: 0;
+}
+.profil-stat-item p {
+    font-size: 0.68rem; color: var(--text-secondary); margin: 2px 0 0;
+}
+
+/* ========== SETTINGS CARD ========== */
+.settings-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+.settings-card-header {
+    padding: 18px 22px; border-bottom: 1px solid var(--border-color);
+}
+.settings-card-header h3 {
+    font-size: 0.95rem; font-weight: 600; margin: 0;
+    display: flex; align-items: center; gap: 8px;
+}
+.settings-card-header h3 i { color: #6366f1; }
+.settings-card-body { padding: 22px; }
+
+/* ========== FORM ========== */
+.form-label {
+    font-weight: 600; font-size: 0.82rem; color: var(--text-primary);
+    display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+}
+.form-control-lg {
+    font-size: 0.95rem; padding: 12px 16px;
+    border-radius: 12px; border: 2px solid var(--border-color);
+    transition: var(--transition);
+}
+.form-control-lg:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99,102,241,0.06);
+}
+
+.toggle-password {
+    border: 2px solid var(--border-color); border-left: none;
+    background: white; color: #94a3b8; transition: var(--transition);
+}
+.toggle-password:hover { color: #6366f1; }
+
+/* ========== PASSWORD STRENGTH ========== */
+.password-strength { margin-top: -8px; }
+.strength-bar {
+    height: 6px; background: #f1f5f9; border-radius: 3px; overflow: hidden;
+}
+.strength-fill {
+    height: 100%; border-radius: 3px; transition: width 0.3s ease, background 0.3s ease;
+}
+.strength-text { font-size: 0.72rem; font-weight: 500; }
+
+/* ========== ACTIVITY ========== */
+.activity-item-profil {
+    display: flex; align-items: flex-start; gap: 12px;
+}
+.activity-dot-profil {
+    width: 10px; height: 10px; min-width: 10px; border-radius: 50%; margin-top: 5px;
+}
+.bg-green { background: #10b981; }
+.bg-blue { background: #3b82f6; }
+
+/* ========== ALERTES ========== */
+.alert {
+    border: none; border-radius: var(--radius); padding: 14px 18px;
+    font-weight: 500; display: flex; align-items: center; gap: 10px;
+}
+.alert-success { background: rgba(16,185,129,0.08); color: #10b981; }
+.alert-danger { background: rgba(239,68,68,0.08); color: #ef4444; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 992px) {
+    .profil-grid { grid-template-columns: 1fr; }
+    .profil-card { position: static; }
+}

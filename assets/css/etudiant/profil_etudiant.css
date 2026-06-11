@@ -1,0 +1,150 @@
+/* ============================================================
+   ISTAM PAIEMENT - PROFIL ÉTUDIANT
+   ============================================================ */
+
+.page-header { margin-bottom: 24px; }
+.page-title {
+    font-size: 1.5rem; font-weight: 700; color: var(--text-primary);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.page-title i { color: var(--primary); }
+.page-subtitle { color: var(--text-secondary); font-size: 0.85rem; margin: 0; }
+
+/* ========== PROFIL GRID ========== */
+.profil-grid-etu {
+    display: grid; grid-template-columns: 350px 1fr;
+    gap: 24px; align-items: start;
+}
+
+/* ========== PROFIL CARD ========== */
+.profil-card-etu {
+    background: var(--bg-card); border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg); border: 1px solid var(--border-color);
+    overflow: hidden; position: sticky; top: 90px;
+}
+.profil-cover-etu {
+    height: 80px;
+    background: linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #8b5cf6 100%);
+    position: relative;
+}
+.profil-cover-etu::after {
+    content: ''; position: absolute; bottom: -18px; left: 0; right: 0;
+    height: 36px; background: var(--bg-card); border-radius: 50% 50% 0 0;
+}
+.profil-avatar-wrapper-etu {
+    position: relative; width: 100px; height: 100px;
+    margin: -50px auto 0; z-index: 2;
+}
+.profil-avatar-etu {
+    width: 100px; height: 100px;
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; font-weight: 700; color: white;
+    border: 5px solid var(--bg-card); box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+.profil-status-etu {
+    position: absolute; bottom: 6px; right: 6px;
+    width: 20px; height: 20px; background: #10b981;
+    border-radius: 50%; border: 4px solid var(--bg-card);
+    animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); } 50% { box-shadow: 0 0 0 8px rgba(16,185,129,0); } }
+
+.profil-card-body-etu { padding: 16px 20px 0; }
+.profil-card-body-etu h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; }
+.profil-role-etu { margin-bottom: 16px; }
+.role-badge-etu {
+    padding: 5px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 600;
+    background: rgba(59,130,246,0.08); color: var(--primary);
+    border: 1px solid rgba(59,130,246,0.2);
+    display: inline-flex; align-items: center; gap: 6px;
+}
+
+.profil-info-list { text-align: left; }
+.profil-info-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; font-size: 0.82rem; color: var(--text-secondary);
+    border-bottom: 1px solid #f1f5f9;
+}
+.profil-info-item:last-child { border-bottom: none; }
+.profil-info-item i { width: 20px; text-align: center; color: var(--primary); font-size: 0.85rem; }
+.statut-badge-etu {
+    padding: 2px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 600;
+}
+.statut-actif-etu { background: rgba(16,185,129,0.08); color: #10b981; }
+.statut-inactif-etu { background: rgba(239,68,68,0.08); color: #ef4444; }
+
+.profil-card-footer-etu {
+    border-top: 1px solid var(--border-color);
+    margin-top: 14px; padding: 14px 18px;
+}
+.profil-stats-row-etu { display: flex; justify-content: space-around; text-align: center; }
+.profil-stat-item-etu h4 { font-size: 1rem; font-weight: 700; color: var(--text-primary); margin: 0; }
+.profil-stat-item-etu p { font-size: 0.65rem; color: var(--text-secondary); margin: 2px 0 0; }
+
+/* ========== SETTINGS CARD ========== */
+.settings-card-etu {
+    background: var(--bg-card); border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); overflow: hidden;
+}
+.settings-card-header-etu {
+    padding: 16px 20px; border-bottom: 1px solid var(--border-color);
+}
+.settings-card-header-etu h3 {
+    font-size: 0.9rem; font-weight: 600; margin: 0;
+    display: flex; align-items: center; gap: 8px;
+}
+.settings-card-body-etu { padding: 20px; }
+
+.form-label {
+    font-weight: 600; font-size: 0.8rem; color: var(--text-primary);
+    display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+}
+.form-control-lg {
+    font-size: 0.9rem; padding: 11px 14px;
+    border-radius: 10px; border: 2px solid var(--border-color);
+    transition: var(--transition);
+}
+.form-control-lg:focus {
+    border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.06);
+}
+.toggle-password {
+    border: 2px solid var(--border-color); border-left: none;
+    background: white; color: #94a3b8; transition: var(--transition);
+}
+.toggle-password:hover { color: var(--primary); }
+
+/* ========== PASSWORD STRENGTH ========== */
+.password-strength-etu { margin-top: -8px; }
+.strength-bar-etu { height: 5px; background: #f1f5f9; border-radius: 3px; overflow: hidden; }
+.strength-fill-etu { height: 100%; border-radius: 3px; transition: width 0.3s ease; }
+.strength-text-etu { font-size: 0.7rem; font-weight: 500; }
+
+/* ========== RÉSUMÉ FINANCIER ========== */
+.resume-financier { display: flex; flex-direction: column; gap: 12px; }
+.resume-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid #f1f5f9;
+}
+.resume-item:last-child { border-bottom: none; }
+.resume-label { font-size: 0.82rem; color: var(--text-secondary); }
+.resume-value { font-size: 0.95rem; font-weight: 700; }
+
+/* ========== ALERTES ========== */
+.alert {
+    border: none; border-radius: var(--radius); padding: 14px 18px;
+    font-weight: 500; display: flex; align-items: center; gap: 10px;
+}
+.alert-success { background: rgba(16,185,129,0.08); color: #10b981; }
+.alert-danger { background: rgba(239,68,68,0.08); color: #ef4444; }
+
+/* ========== DARK MODE ========== */
+body.dark .profil-info-item { border-color: #334155; }
+body.dark .resume-item { border-color: #334155; }
+body.dark .form-control-lg:disabled { background: #334155; color: #94a3b8; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 992px) {
+    .profil-grid-etu { grid-template-columns: 1fr; }
+    .profil-card-etu { position: static; max-width: 400px; margin: 0 auto; }
+}

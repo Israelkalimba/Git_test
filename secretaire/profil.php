@@ -1,0 +1,399 @@
+<?php
+require_once '../includes/config.php';
+require_once '../includes/Auth.php';
+require_once '../includes/Database.php';
+
+Auth::checkSession('secretaire');
+
+$db = Database::getInstance();
+$secretaire_nom = $_SESSION['user_nom'] ?? 'Secrétaire';
+$secretaire_id = $_SESSION['user_id'] ?? 1;
+$secretaire_email = '';
+
+// ========== RÉCUPÉRATION DES INFOS ==========
+$stmt = $db->prepare("SELECT * FROM utilisateurs WHERE id_utilisateur = :id");
+$stmt->execute(['id' => $secretaire_id]);
+$secretaire = $stmt->fetch();
+
+if ($secretaire) {
+    $secretaire_nom = $secretaire['nom'];
+    $secretaire_email = $secretaire['email'];
+    $secretaire_created = $secretaire['created_at'];
+    $secretaire_statut = $secretaire['statut_compte'] ?? 'actif';
+}
+
+// ========== TRAITEMENT DES ACTIONS ==========
+$message = '';
+$message_type = '';
+
+// Modifier le profil
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_profile') {
+    $nouveau_nom = trim($_POST['nom'] ?? '');
+    $nouveau_email = trim($_POST['email'] ?? '');
+    
+    $errors = [];
+    if (empty($nouveau_nom)) $errors[] = "Le nom est obligatoire.";
+    if (empty($nouveau_email) || !filter_var($nouveau_email, FILTER_VALIDATE_EMAIL)) $errors[] = "Email invalide.";
+    
+    // Vérifier si l'email n'est pas déjà utilisé
+    if (empty($errors)) {
+        $stmt = $db->prepare("SELECT COUNT(*) as total FROM utilisateurs WHERE email = :email AND id_utilisateur != :id");
+        $stmt->execute(['email' => $nouveau_email, 'id' => $secretaire_id]);
+        if ($stmt->fetch()['total'] > 0) {
+            $errors[] = "Cet email est déjà utilisé par un autre compte.";
+        }
+    }
+    
+    if (empty($errors)) {
+        $stmt = $db->prepare("UPDATE utilisateurs SET nom = :nom, email = :email WHERE id_utilisateur = :id");
+        $stmt->execute(['nom' => $nouveau_nom, 'email' => $nouveau_email, 'id' => $secretaire_id]);
+        
+        $_SESSION['user_nom'] = $nouveau_nom;
+        $secretaire_nom = $nouveau_nom;
+        $secretaire_email = $nouveau_email;
+        
+        // Journaliser
+        try {
+            $stmt = $db->prepare("INSERT INTO audit_log (id_utilisateur, type_action, action, description, adresse_ip) VALUES (:uid, 'modification', 'mise_a_jour_profil', :desc, :ip)");
+            $stmt->execute([
+                'uid' => $secretaire_id,
+                'desc' => "Profil secrétaire mis à jour - Nom: {$nouveau_nom}, Email: {$nouveau_email}",
+                'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
+            ]);
+        } catch (PDOException $e) {}
+        
+        $message = "✅ Profil mis à jour avec succès !";
+        $message_type = 'success';
+    } else {
+        $message = implode('<br>', $errors);
+        $message_type = 'danger';
+    }
+}
+
+// Changer le mot de passe
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'change_password') {
+    $ancien_mdp = $_POST['ancien_mdp'] ?? '';
+    $nouveau_mdp = $_POST['nouveau_mdp'] ?? '';
+    $confirmer_mdp = $_POST['confirmer_mdp'] ?? '';
+    
+    $errors = [];
+    
+    $hashed_ancien = hash('sha256', $ancien_mdp);
+    if ($hashed_ancien !== $secretaire['mot_de_passe']) {
+        $errors[] = "L'ancien mot de passe est incorrect.";
+    }
+    
+    if (strlen($nouveau_mdp) < 6) {
+        $errors[] = "Le nouveau mot de passe doit contenir au moins 6 caractères.";
+    }
+    
+    if ($nouveau_mdp !== $confirmer_mdp) {
+        $errors[] = "Les mots de passe ne correspondent pas.";
+    }
+    
+    if ($ancien_mdp === $nouveau_mdp) {
+        $errors[] = "Le nouveau mot de passe doit être différent de l'ancien.";
+    }
+    
+    if (empty($errors)) {
+        $hashed_nouveau = hash('sha256', $nouveau_mdp);
+        $stmt = $db->prepare("UPDATE utilisateurs SET mot_de_passe = :mdp WHERE id_utilisateur = :id");
+        $stmt->execute(['mdp' => $hashed_nouveau, 'id' => $secretaire_id]);
+        
+        try {
+            $stmt = $db->prepare("INSERT INTO audit_log (id_utilisateur, type_action, action, description, adresse_ip) VALUES (:uid, 'securite', 'changement_mot_de_passe', :desc, :ip)");
+            $stmt->execute([
+                'uid' => $secretaire_id,
+                'desc' => "Mot de passe secrétaire modifié",
+                'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
+            ]);
+        } catch (PDOException $e) {}
+        
+        $message = "🔒 Mot de passe changé avec succès ! Veuillez vous reconnecter.";
+        $message_type = 'success';
+    } else {
+        $message = implode('<br>', $errors);
+        $message_type = 'danger';
+    }
+}
+
+// ========== STATISTIQUES PERSONNELLES ==========
+// Connexions aujourd'hui
+try {
+    $stmt = $db->prepare("SELECT COUNT(*) as total FROM audit_log WHERE id_utilisateur = :id AND type_action = 'connexion' AND DATE(date_action) = CURDATE()");
+    $stmt->execute(['id' => $secretaire_id]);
+    $connexions_aujourdhui = $stmt->fetch()['total'] ?? 0;
+} catch (PDOException $e) {
+    $connexions_aujourdhui = 0;
+}
+
+// Total actions
+try {
+    $stmt = $db->prepare("SELECT COUNT(*) as total FROM audit_log WHERE id_utilisateur = :id");
+    $stmt->execute(['id' => $secretaire_id]);
+    $total_actions = $stmt->fetch()['total'] ?? 0;
+} catch (PDOException $e) {
+    $total_actions = 0;
+}
+
+// Anomalies traitées
+try {
+    $stmt = $db->prepare("SELECT COUNT(*) as total FROM audit_log WHERE id_utilisateur = :id AND action = 'anomalie_traitee'");
+    $stmt->execute(['id' => $secretaire_id]);
+    $anomalies_traitees = $stmt->fetch()['total'] ?? 0;
+} catch (PDOException $e) {
+    $anomalies_traitees = 0;
+}
+
+// Validations manuelles
+try {
+    $stmt = $db->prepare("SELECT COUNT(*) as total FROM audit_log WHERE id_utilisateur = :id AND action = 'validation_manuelle'");
+    $stmt->execute(['id' => $secretaire_id]);
+    $validations_manuelles = $stmt->fetch()['total'] ?? 0;
+} catch (PDOException $e) {
+    $validations_manuelles = 0;
+}
+
+// Notifications
+$stmt = $db->prepare("SELECT COUNT(*) as total FROM notifications WHERE id_utilisateur = :id AND statut = 'non_lu'");
+$stmt->execute(['id' => $secretaire_id]);
+$notifications_non_lues = $stmt->fetch()['total'] ?? 0;
+
+$stmt = $db->prepare("SELECT * FROM notifications WHERE id_utilisateur = :id ORDER BY date_envoi DESC LIMIT 5");
+$stmt->execute(['id' => $secretaire_id]);
+$navbar_notifications = $stmt->fetchAll();
+?>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Profil - Secrétaire ISTAM</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/secretaire/dashboard_secretaire.css">
+    <link rel="stylesheet" href="../assets/css/secretaire/profil.css">
+</head>
+<body>
+    <div class="secretaire-layout">
+        <?php include 'includes/sidebar_secretaire.php'; ?>
+        <div class="main-content">
+            <?php 
+            $navbar_notif_non_lues = $notifications_non_lues;
+            include 'includes/navbar_secretaire.php'; 
+            ?>
+            <main class="dashboard-content">
+                
+                <!-- En-tête -->
+                <div class="page-header">
+                    <h1 class="page-title">
+                        <i class="fas fa-user-circle"></i> Mon Profil
+                    </h1>
+                    <p class="page-subtitle">
+                        <i class="fas fa-info-circle"></i> 
+                        Gérez vos informations personnelles et votre mot de passe.
+                    </p>
+                </div>
+
+                <!-- Message -->
+                <?php if (!empty($message)): ?>
+                    <div class="alert alert-<?= $message_type ?> alert-dismissible fade show" role="alert">
+                        <i class="fas fa-<?= $message_type === 'success' ? 'check-circle' : ($message_type === 'danger' ? 'times-circle' : 'exclamation-triangle') ?>"></i>
+                        <?= $message ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <?php endif; ?>
+
+                <div class="profil-grid">
+                    <!-- Carte Profil -->
+                    <div class="profil-card">
+                        <div class="profil-cover-sec"></div>
+                        <div class="profil-avatar-wrapper">
+                            <div class="profil-avatar-sec">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <div class="profil-status online"></div>
+                        </div>
+                        <div class="profil-card-body text-center">
+                            <h2><?= htmlspecialchars($secretaire_nom) ?></h2>
+                            <p class="profil-role">
+                                <span class="role-badge-sec">
+                                    <i class="fas fa-user-tie"></i> Secrétaire
+                                </span>
+                            </p>
+                            <p class="profil-email">
+                                <i class="fas fa-envelope"></i> <?= htmlspecialchars($secretaire_email) ?>
+                            </p>
+                            <p class="profil-date">
+                                <i class="fas fa-calendar-alt"></i> Membre depuis le <?= date('d/m/Y', strtotime($secretaire_created ?? 'now')) ?>
+                            </p>
+                            <p class="profil-statut">
+                                <span class="statut-badge <?= ($secretaire_statut ?? 'actif') === 'actif' ? 'statut-actif' : 'statut-inactif' ?>">
+                                    <i class="fas fa-circle"></i> Compte <?= ucfirst($secretaire_statut ?? 'Actif') ?>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="profil-card-footer">
+                            <div class="profil-stats-row">
+                                <div class="profil-stat-item">
+                                    <h4><?= $connexions_aujourdhui ?></h4>
+                                    <p>Connexions aujourd'hui</p>
+                                </div>
+                                <div class="profil-stat-item">
+                                    <h4><?= $total_actions ?></h4>
+                                    <p>Actions totales</p>
+                                </div>
+                            </div>
+                            <div class="profil-stats-row mt-3">
+                                <div class="profil-stat-item">
+                                    <h4><?= $anomalies_traitees ?></h4>
+                                    <p>Anomalies traitées</p>
+                                </div>
+                                <div class="profil-stat-item">
+                                    <h4><?= $validations_manuelles ?></h4>
+                                    <p>Validations manuelles</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Colonne droite -->
+                    <div class="profil-details">
+                        <!-- Informations personnelles -->
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <h3><i class="fas fa-user-edit"></i> Informations personnelles</h3>
+                            </div>
+                            <div class="settings-card-body">
+                                <form method="POST" action="">
+                                    <input type="hidden" name="action" value="update_profile">
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-user"></i> Nom complet
+                                        </label>
+                                        <input type="text" name="nom" class="form-control form-control-lg" 
+                                               value="<?= htmlspecialchars($secretaire_nom) ?>" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-envelope"></i> Adresse email
+                                        </label>
+                                        <input type="email" name="email" class="form-control form-control-lg" 
+                                               value="<?= htmlspecialchars($secretaire_email) ?>" required>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-shield-alt"></i> Rôle
+                                        </label>
+                                        <input type="text" class="form-control form-control-lg" 
+                                               value="Secrétaire" readonly disabled>
+                                        <small class="text-muted">Le rôle est défini par l'administrateur.</small>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save"></i> Mettre à jour le profil
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Changer mot de passe -->
+                        <div class="settings-card mt-4">
+                            <div class="settings-card-header">
+                                <h3><i class="fas fa-lock"></i> Changer le mot de passe</h3>
+                            </div>
+                            <div class="settings-card-body">
+                                <form method="POST" action="" id="formPassword">
+                                    <input type="hidden" name="action" value="change_password">
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-key"></i> Mot de passe actuel
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="password" name="ancien_mdp" class="form-control form-control-lg" 
+                                                   placeholder="••••••••" required id="ancienMdp">
+                                            <button type="button" class="btn btn-outline-secondary toggle-password" 
+                                                    data-target="ancienMdp">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-lock"></i> Nouveau mot de passe
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="password" name="nouveau_mdp" class="form-control form-control-lg" 
+                                                   placeholder="••••••••" required id="nouveauMdp" minlength="6">
+                                            <button type="button" class="btn btn-outline-secondary toggle-password" 
+                                                    data-target="nouveauMdp">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                        <small class="text-muted">Minimum 6 caractères</small>
+                                    </div>
+                                    
+                                    <div class="mb-3">
+                                        <label class="form-label">
+                                            <i class="fas fa-check-circle"></i> Confirmer le mot de passe
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="password" name="confirmer_mdp" class="form-control form-control-lg" 
+                                                   placeholder="••••••••" required id="confirmerMdp">
+                                            <button type="button" class="btn btn-outline-secondary toggle-password" 
+                                                    data-target="confirmerMdp">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Indicateur de force -->
+                                    <div class="password-strength mb-3" id="passwordStrength" style="display:none;">
+                                        <div class="strength-bar">
+                                            <div class="strength-fill" id="strengthFill"></div>
+                                        </div>
+                                        <small class="strength-text" id="strengthText"></small>
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="fas fa-key"></i> Changer le mot de passe
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Activité récente -->
+                        <div class="settings-card mt-4">
+                            <div class="settings-card-header">
+                                <h3><i class="fas fa-history"></i> Session</h3>
+                            </div>
+                            <div class="settings-card-body">
+                                <div class="activity-item-profil">
+                                    <div class="activity-dot bg-green"></div>
+                                    <div>
+                                        <strong>Session active</strong>
+                                        <p class="text-muted small mb-0">
+                                            Connecté depuis aujourd'hui | IP: <?= $_SERVER['REMOTE_ADDR'] ?? 'N/A' ?>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../assets/js/secretaire/dashboard_secretaire.js"></script>
+    <script src="../assets/js/secretaire/profil.js"></script>
+</body>
+</html>

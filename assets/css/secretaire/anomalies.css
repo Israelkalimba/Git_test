@@ -1,0 +1,147 @@
+/* ============================================================
+   ISTAM PAIEMENT - ANOMALIES (SECRÉTAIRE)
+   ============================================================ */
+
+.page-header { margin-bottom: 24px; }
+.page-title {
+    font-size: 1.5rem; font-weight: 700; color: var(--text-primary);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.page-title i { color: #ef4444; animation: shakeIcon 3s ease-in-out infinite; }
+
+@keyframes shakeIcon {
+    0%,100% { transform: rotate(0); }
+    2%,6% { transform: rotate(4deg); }
+    4%,8% { transform: rotate(-4deg); }
+}
+
+.page-subtitle { color: var(--text-secondary); font-size: 0.85rem; margin: 0; }
+
+/* ========== STATS ========== */
+.anomalie-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px;
+}
+.anomalie-stat-card {
+    background: var(--bg-card); border-radius: var(--radius-lg); padding: 16px 18px;
+    display: flex; align-items: center; gap: 14px;
+    border: 2px solid var(--border-color); transition: var(--transition);
+}
+.anomalie-stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.stat-echec { border-left: 4px solid #ef4444; }
+.stat-attente { border-left: 4px solid #f59e0b; }
+.stat-bloque { border-left: 4px solid #f97316; }
+.stat-montant { border-left: 4px solid #8b5cf6; }
+
+.anom-stat-icon {
+    width: 44px; height: 44px; min-width: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.stat-echec .anom-stat-icon { background: rgba(239,68,68,0.1); color: #ef4444; }
+.stat-attente .anom-stat-icon { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.stat-bloque .anom-stat-icon { background: rgba(249,115,22,0.1); color: #f97316; }
+.stat-montant .anom-stat-icon { background: rgba(139,92,246,0.1); color: #8b5cf6; }
+
+.anom-stat-info h4 { font-size: 1.3rem; font-weight: 700; margin: 0; color: var(--text-primary); }
+.anom-stat-info p { font-size: 0.72rem; color: var(--text-secondary); margin: 2px 0 0; }
+
+/* ========== FILTRES ========== */
+.filtres-card {
+    background: var(--bg-card); border-radius: var(--radius-xl);
+    padding: 16px 20px; margin-bottom: 20px;
+    border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
+}
+.filtre-label {
+    font-weight: 600; font-size: 0.7rem; color: var(--text-secondary);
+    margin-bottom: 4px; display: flex; align-items: center; gap: 5px;
+    white-space: nowrap;
+}
+
+/* ========== TABLE ========== */
+.anomalie-row { transition: var(--transition); }
+.anomalie-row:hover { background: #fef2f2; }
+.row-echec { border-left: 4px solid #ef4444; }
+.row-attente { border-left: 4px solid #f59e0b; }
+.row-ecart { background: #fffbeb; }
+
+.ref-code {
+    background: #f1f5f9; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.7rem; font-family: 'JetBrains Mono', monospace;
+}
+
+/* ========== TYPES ANOMALIES ========== */
+.type-anomalie-badge {
+    padding: 4px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 600;
+    display: inline-block;
+}
+.type-api { background: rgba(239,68,68,0.1); color: #ef4444; }
+.type-montant { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.type-operateur { background: rgba(107,114,128,0.1); color: #6b7280; }
+.type-bloque { background: rgba(249,115,22,0.1); color: #f97316; }
+.type-autres { background: rgba(139,92,246,0.1); color: #8b5cf6; }
+
+.ecart-badge {
+    padding: 3px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 600;
+}
+.ecart-plus { background: rgba(239,68,68,0.08); color: #ef4444; }
+.ecart-moins { background: rgba(16,185,129,0.08); color: #10b981; }
+
+.status-pill {
+    padding: 4px 10px; border-radius: 50px; font-size: 0.72rem; font-weight: 600;
+    display: inline-block;
+}
+.status-echec { background: rgba(239,68,68,0.08); color: #ef4444; }
+.status-en_attente { background: rgba(245,158,11,0.08); color: #f59e0b; }
+
+.badge-count {
+    padding: 5px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 700;
+}
+.badge-danger { background: rgba(239,68,68,0.1); color: #ef4444; }
+
+/* ========== LEGEND ========== */
+.legend-card {
+    background: var(--bg-card); border-radius: var(--radius-lg);
+    padding: 16px 20px; border: 1px solid var(--border-color);
+}
+.legend-card h6 {
+    font-size: 0.85rem; font-weight: 600; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+}
+.legend-items { display: flex; flex-wrap: wrap; gap: 10px; }
+.legend-badge {
+    padding: 6px 14px; border-radius: 50px; font-size: 0.73rem; font-weight: 600;
+}
+.legend-badge.type-api { background: rgba(239,68,68,0.08); color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
+.legend-badge.type-montant { background: rgba(245,158,11,0.08); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+.legend-badge.type-operateur { background: rgba(107,114,129,0.08); color: #6b7280; border: 1px solid rgba(107,114,129,0.2); }
+.legend-badge.type-bloque { background: rgba(249,115,22,0.08); color: #f97316; border: 1px solid rgba(249,115,22,0.2); }
+.legend-badge.type-autres { background: rgba(139,92,246,0.08); color: #8b5cf6; border: 1px solid rgba(139,92,246,0.2); }
+
+/* ========== PAGINATION ========== */
+.pagination-wrapper { padding: 18px 20px; border-top: 1px solid var(--border-color); }
+
+/* ========== EMPTY STATE ========== */
+.empty-state { text-align: center; padding: 40px; }
+.empty-state i { font-size: 3rem; }
+
+/* ========== ALERTES ========== */
+.alert {
+    border: none; border-radius: var(--radius); padding: 14px 18px;
+    font-weight: 500; display: flex; align-items: center; gap: 10px;
+}
+.alert-success { background: rgba(16,185,129,0.08); color: #10b981; }
+.alert-danger { background: rgba(239,68,68,0.08); color: #ef4444; }
+.alert-warning { background: rgba(245,158,11,0.08); color: #f59e0b; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 992px) {
+    .anomalie-stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+    .anomalie-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .anomalie-stat-card { padding: 12px 14px; }
+    .anom-stat-icon { width: 36px; height: 36px; min-width: 36px; font-size: 0.9rem; }
+    .anom-stat-info h4 { font-size: 1.1rem; }
+}
+@media (max-width: 576px) {
+    .anomalie-stats { grid-template-columns: 1fr; }
+}

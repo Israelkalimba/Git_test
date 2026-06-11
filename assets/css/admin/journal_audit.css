@@ -1,0 +1,154 @@
+/* ============================================================
+   ISTAM PAIEMENT - JOURNAL D'AUDIT
+   ============================================================ */
+
+.page-header { margin-bottom: 24px; }
+.page-title {
+    font-size: 1.65rem; font-weight: 700; color: var(--text-primary);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.page-title i { color: #1e293b; }
+.page-subtitle { color: var(--text-secondary); font-size: 0.85rem; margin: 0; }
+
+/* ========== AUDIT STATS ========== */
+.audit-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+}
+.audit-stat-item {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+.audit-stat-item:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.audit-stat-icon {
+    width: 44px; height: 44px; min-width: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; color: white;
+}
+.bg-dark { background: #1e293b; }
+.bg-green { background: #10b981; }
+.bg-blue { background: #3b82f6; }
+.bg-purple { background: #8b5cf6; }
+.audit-stat-info h4 { font-size: 1.3rem; font-weight: 700; margin: 0; color: var(--text-primary); }
+.audit-stat-info p { font-size: 0.72rem; color: var(--text-secondary); margin: 2px 0 0; }
+
+/* ========== FILTRES ========== */
+.filtres-section {
+    background: var(--bg-card); border-radius: var(--radius-lg);
+    padding: 16px 20px; margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+}
+.filtre-label {
+    font-weight: 600; font-size: 0.72rem; color: var(--text-secondary);
+    margin-bottom: 4px; display: flex; align-items: center; gap: 5px;
+}
+
+/* ========== LOG TABLE ========== */
+.log-row {
+    transition: var(--transition);
+    font-size: 0.83rem;
+}
+.log-row:hover { background: #f8fafc; }
+
+.log-id {
+    background: #f1f5f9; padding: 2px 7px; border-radius: 4px;
+    font-size: 0.7rem; font-family: 'JetBrains Mono', 'Courier New', monospace;
+    color: var(--text-secondary);
+}
+
+.log-date {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;
+    color: var(--text-secondary); white-space: nowrap;
+}
+.log-date i { font-size: 0.65rem; color: #94a3b8; }
+
+.log-type-badge {
+    padding: 4px 10px; border-radius: 50px; font-size: 0.7rem; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+}
+.log-type-badge i { font-size: 0.65rem; }
+
+.badge-success { background: rgba(16,185,129,0.1); color: #10b981; }
+.badge-secondary { background: rgba(100,116,139,0.1); color: #64748b; }
+.badge-primary { background: rgba(59,130,246,0.1); color: #3b82f6; }
+.badge-info { background: rgba(6,182,212,0.1); color: #06b6d4; }
+.badge-warning { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.badge-danger { background: rgba(239,68,68,0.1); color: #ef4444; }
+.badge-purple { background: rgba(139,92,246,0.1); color: #8b5cf6; }
+.badge-dark { background: rgba(30,41,59,0.1); color: #1e293b; }
+.badge-orange { background: rgba(249,115,22,0.1); color: #f97316; }
+
+.log-user { display: flex; align-items: center; gap: 8px; }
+.log-user-avatar {
+    width: 30px; height: 30px; min-width: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; color: white;
+}
+.avatar-admin { background: #1e293b; }
+.avatar-secretaire { background: #10b981; }
+.avatar-etudiant { background: #3b82f6; }
+
+.log-action {
+    font-weight: 600; font-size: 0.8rem; color: var(--text-primary);
+}
+
+.log-description {
+    font-size: 0.78rem; color: var(--text-secondary);
+    max-width: 250px; display: inline-block;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.log-ip {
+    font-size: 0.7rem; font-family: 'JetBrains Mono', monospace;
+    color: #64748b; white-space: nowrap;
+    background: #f8fafc; padding: 3px 8px; border-radius: 4px;
+    cursor: pointer; transition: var(--transition);
+}
+.log-ip:hover { background: #e2e8f0; color: #1e293b; }
+
+/* ========== PAGINATION ========== */
+.pagination-wrapper {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+}
+.page-link {
+    border-radius: 8px; margin: 0 2px; font-size: 0.83rem;
+    color: var(--text-secondary); border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+.page-link:hover { background: #f1f5f9; color: var(--primary); }
+.page-item.active .page-link {
+    background: var(--primary); border-color: var(--primary); color: white;
+}
+.page-item.disabled .page-link { opacity: 0.4; }
+
+/* ========== EMPTY STATE ========== */
+.empty-state { text-align: center; padding: 40px 20px; }
+.empty-state i { color: #cbd5e1; }
+.empty-state h4 { color: var(--text-primary); font-weight: 600; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 992px) {
+    .audit-stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+    .audit-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .audit-stat-item { padding: 12px 14px; }
+    .audit-stat-icon { width: 36px; height: 36px; min-width: 36px; font-size: 0.9rem; }
+    .audit-stat-info h4 { font-size: 1.1rem; }
+    .log-date { font-size: 0.7rem; }
+}
+@media (max-width: 576px) {
+    .audit-stats { grid-template-columns: 1fr; }
+}

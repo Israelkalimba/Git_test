@@ -1,0 +1,137 @@
+/* ============================================================
+   ISTAM PAIEMENT - PARAMÈTRES DU SYSTÈME
+   ============================================================ */
+
+.page-header { margin-bottom: 24px; }
+.page-title {
+    font-size: 1.65rem; font-weight: 700; color: var(--text-primary);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.page-title i { color: #64748b; }
+.page-subtitle { color: var(--text-secondary); font-size: 0.85rem; margin: 0; }
+
+/* ========== SETTINGS GRID ========== */
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.settings-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+.settings-card-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 22px; border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap; gap: 8px;
+}
+.settings-card-header h3 {
+    font-size: 0.95rem; font-weight: 600; margin: 0;
+    display: flex; align-items: center; gap: 8px;
+}
+.settings-card-header h3 i { color: #64748b; }
+.settings-card-body { padding: 22px; }
+
+/* ========== FORM ELEMENTS ========== */
+.form-label {
+    font-weight: 600; font-size: 0.82rem; color: var(--text-primary);
+    display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+}
+.form-control, .form-select {
+    border-radius: 10px; border: 2px solid var(--border-color);
+    padding: 10px 14px; font-size: 0.88rem; transition: var(--transition);
+}
+.form-control:focus, .form-select:focus {
+    border-color: #64748b;
+    box-shadow: 0 0 0 3px rgba(100,116,139,0.06);
+}
+.input-group-text {
+    background: #f8fafc; border: 2px solid var(--border-color);
+    font-size: 0.82rem; font-weight: 500;
+}
+
+/* ========== INFO SYSTÈME ========== */
+.info-grid-sys {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px;
+}
+.info-item-sys {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 16px; border-radius: 8px; transition: var(--transition);
+}
+.info-item-sys:hover { background: #f8fafc; }
+.info-label-sys {
+    font-size: 0.8rem; color: var(--text-secondary); font-weight: 500;
+}
+.info-value-sys {
+    font-size: 0.82rem; font-weight: 600; color: var(--text-primary);
+}
+.info-value-sys code {
+    background: #f1f5f9; padding: 3px 8px; border-radius: 4px;
+    font-size: 0.75rem; font-family: 'JetBrains Mono', monospace;
+}
+
+/* ========== DB STATS ========== */
+.db-stats-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+}
+.db-stat-item {
+    background: #f8fafc; border-radius: var(--radius); padding: 16px 14px;
+    display: flex; align-items: center; gap: 12px;
+    border: 1px solid #f1f5f9; transition: var(--transition);
+}
+.db-stat-item:hover { background: #f1f5f9; transform: translateY(-1px); }
+.db-stat-icon {
+    width: 38px; height: 38px; min-width: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; color: white;
+}
+.bg-blue { background: #3b82f6; }
+.bg-green { background: #10b981; }
+.bg-purple { background: #8b5cf6; }
+.bg-orange { background: #f97316; }
+.bg-pink { background: #ec4899; }
+.bg-teal { background: #14b8a6; }
+.bg-indigo { background: #6366f1; }
+.bg-dark { background: #1e293b; }
+.db-stat-info h4 { font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--text-primary); }
+.db-stat-info p { font-size: 0.68rem; color: var(--text-secondary); margin: 1px 0 0; }
+
+/* ========== API INFO ========== */
+.api-info-box {
+    background: #f8fafc; border-radius: var(--radius); padding: 18px;
+    border: 1px solid #e2e8f0;
+}
+.api-url-box code {
+    display: block; background: #1e293b; color: #e2e8f0;
+    padding: 10px 14px; border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+}
+
+/* ========== ALERTES ========== */
+.alert {
+    border: none; border-radius: var(--radius); padding: 14px 18px;
+    font-weight: 500; display: flex; align-items: center; gap: 10px;
+}
+.alert-success { background: rgba(16,185,129,0.08); color: #10b981; }
+.alert-danger { background: rgba(239,68,68,0.08); color: #ef4444; }
+.alert-warning { background: rgba(245,158,11,0.08); color: #f59e0b; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1200px) {
+    .settings-grid { grid-template-columns: 1fr; }
+    .db-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+    .info-grid-sys { grid-template-columns: 1fr; }
+    .db-stats-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .db-stat-item { padding: 12px 10px; }
+    .db-stat-icon { width: 32px; height: 32px; min-width: 32px; font-size: 0.8rem; }
+    .db-stat-info h4 { font-size: 0.95rem; }
+}
+@media (max-width: 576px) {
+    .db-stats-grid { grid-template-columns: 1fr; }
+}

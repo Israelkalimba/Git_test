@@ -1,0 +1,132 @@
+/* ============================================================
+   ISTAM PAIEMENT - RAPPORTS JOURNALIERS (SECRÉTAIRE)
+   ============================================================ */
+
+.page-header { margin-bottom: 24px; }
+.page-title {
+    font-size: 1.5rem; font-weight: 700; color: var(--text-primary);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.page-title i { color: #6366f1; }
+.page-subtitle { color: var(--text-secondary); font-size: 0.85rem; margin: 0; }
+
+/* ========== KPI GRID ========== */
+.rapport-kpi-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    gap: 12px; margin-bottom: 24px;
+}
+.rapport-kpi {
+    background: var(--bg-card); border-radius: var(--radius-lg);
+    padding: 16px 14px; display: flex; align-items: center; gap: 12px;
+    border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+.rapport-kpi:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.kpi-icon {
+    width: 42px; height: 42px; min-width: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: white;
+}
+.kpi-total .kpi-icon { background: #6366f1; }
+.kpi-succes .kpi-icon { background: #10b981; }
+.kpi-echec .kpi-icon { background: #ef4444; }
+.kpi-attente .kpi-icon { background: #f59e0b; }
+.kpi-montant .kpi-icon { background: #8b5cf6; }
+.kpi-panier .kpi-icon { background: #14b8a6; }
+
+.kpi-info h4 { font-size: 1.2rem; font-weight: 700; margin: 0; color: var(--text-primary); }
+.kpi-info p { font-size: 0.68rem; color: var(--text-secondary); margin: 2px 0 0; }
+
+/* ========== RAPPORT GRID ========== */
+.rapport-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 18px; margin-bottom: 24px;
+}
+.rapport-card {
+    background: var(--bg-card); border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color); box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+.rapport-card-header {
+    padding: 14px 18px; border-bottom: 1px solid var(--border-color);
+    background: #f9fafb;
+}
+.rapport-card-header h4 {
+    font-size: 0.85rem; font-weight: 600; margin: 0;
+    display: flex; align-items: center; gap: 8px;
+}
+.rapport-card-body { padding: 10px 0; }
+
+.rapport-table { margin: 0; }
+.rapport-table th {
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--text-secondary); padding: 8px 18px;
+    background: #f9fafb; border-bottom: 1px solid var(--border-color);
+}
+.rapport-table td {
+    padding: 8px 18px; font-size: 0.8rem; border-bottom: 1px solid #f1f5f9;
+}
+
+/* ========== INSCRITS LIST ========== */
+.inscrits-list { padding: 0 10px; }
+.inscrit-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 8px; border-bottom: 1px solid #f1f5f9;
+}
+.inscrit-item:last-child { border-bottom: none; }
+.inscrit-avatar {
+    width: 36px; height: 36px; min-width: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white; display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700;
+}
+.inscrit-info strong { display: block; font-size: 0.8rem; }
+.inscrit-info small { font-size: 0.7rem; color: var(--text-secondary); }
+
+/* ========== STATUS PILLS ========== */
+.status-pill {
+    padding: 3px 10px; border-radius: 50px; font-size: 0.68rem; font-weight: 600;
+    display: inline-block;
+}
+.status-succes { background: rgba(16,185,129,0.08); color: #10b981; }
+.status-echec { background: rgba(239,68,68,0.08); color: #ef4444; }
+.status-en_attente { background: rgba(245,158,11,0.08); color: #f59e0b; }
+
+/* ========== RÉSUMÉ ========== */
+.rapport-resume {
+    padding: 16px 20px; border-top: 1px solid var(--border-color);
+    background: #f9fafb;
+}
+.resume-label { display: block; font-size: 0.72rem; color: var(--text-secondary); }
+.resume-value { font-size: 1.1rem; }
+
+.ref-code {
+    background: #f1f5f9; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.7rem; font-family: 'JetBrains Mono', monospace;
+}
+.badge-count {
+    padding: 5px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 700;
+    background: rgba(99,102,241,0.08); color: #6366f1;
+}
+
+/* ========== EMPTY STATE ========== */
+.empty-state { text-align: center; padding: 30px; }
+.empty-state i { color: #a5b4fc; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1400px) {
+    .rapport-kpi-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 992px) {
+    .rapport-kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .rapport-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+    .rapport-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .rapport-kpi { padding: 12px; }
+    .kpi-icon { width: 34px; height: 34px; min-width: 34px; font-size: 0.85rem; }
+    .kpi-info h4 { font-size: 1rem; }
+}
+@media (max-width: 576px) {
+    .rapport-kpi-grid { grid-template-columns: 1fr 1fr; }
+}

@@ -1,0 +1,148 @@
+/* ============================================================
+   ISTAM PAIEMENT - VALIDATION PAIEMENTS (SECRÉTAIRE)
+   ============================================================ */
+
+.page-header { margin-bottom: 24px; }
+.page-title {
+    font-size: 1.5rem; font-weight: 700; color: var(--text-primary);
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+.page-title i { color: #f59e0b; }
+.page-subtitle { color: var(--text-secondary); font-size: 0.85rem; margin: 0; }
+
+/* ========== VALIDATION STATS ========== */
+.validation-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px;
+}
+.val-stat-card {
+    background: var(--bg-card); border-radius: var(--radius-lg); padding: 16px 18px;
+    display: flex; align-items: center; gap: 14px;
+    border: 2px solid var(--border-color); transition: var(--transition);
+}
+.val-stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.stat-total { border-left: 4px solid #f59e0b; }
+.stat-recent { border-left: 4px solid #10b981; }
+.stat-ancien { border-left: 4px solid #ef4444; }
+.stat-action { border-left: 4px solid #3b82f6; }
+
+.val-stat-icon {
+    width: 44px; height: 44px; min-width: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.stat-total .val-stat-icon { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.stat-recent .val-stat-icon { background: rgba(16,185,129,0.1); color: #10b981; }
+.stat-ancien .val-stat-icon { background: rgba(239,68,68,0.1); color: #ef4444; }
+.stat-action .val-stat-icon { background: rgba(59,130,246,0.1); color: #3b82f6; }
+
+.val-stat-info h4 { font-size: 1.3rem; font-weight: 700; margin: 0; color: var(--text-primary); }
+.val-stat-info p { font-size: 0.72rem; color: var(--text-secondary); margin: 2px 0 0; }
+
+/* ========== FILTRES ========== */
+.filtres-rapides {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    margin-bottom: 20px; padding: 12px 16px;
+    background: var(--bg-card); border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+}
+.filtre-label-text {
+    font-weight: 600; font-size: 0.82rem; color: var(--text-secondary);
+    display: flex; align-items: center; gap: 6px; margin-right: 6px;
+}
+.filtre-pill {
+    padding: 7px 16px; border-radius: 50px; font-size: 0.78rem; font-weight: 500;
+    text-decoration: none; color: var(--text-secondary); background: #f1f5f9;
+    border: 2px solid transparent; transition: var(--transition);
+    display: inline-flex; align-items: center; gap: 5px;
+}
+.filtre-pill:hover { background: #e2e8f0; color: var(--text-primary); }
+.filtre-pill.active { background: #fffbeb; color: #f59e0b; border-color: #f59e0b; font-weight: 600; }
+
+/* ========== TABLE ========== */
+.val-row { transition: var(--transition); }
+.val-row:hover { background: #fffbeb; }
+.row-ancien { background: #fef2f2; border-left: 4px solid #ef4444; }
+.row-ancien:hover { background: #fee2e2; }
+
+.ref-code {
+    background: #f1f5f9; padding: 3px 8px; border-radius: 4px;
+    font-size: 0.7rem; font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+}
+.ref-code:hover { background: #e2e8f0; }
+
+.frais-badge {
+    background: rgba(17,153,142,0.06); color: var(--primary);
+    padding: 3px 10px; border-radius: 50px; font-size: 0.72rem;
+    font-weight: 500; border: 1px solid rgba(17,153,142,0.15);
+}
+.operateur-badge {
+    background: rgba(99,102,241,0.06); color: #6366f1;
+    padding: 2px 10px; border-radius: 50px; font-size: 0.72rem; font-weight: 500;
+}
+.badge-ancien {
+    display: inline-block; background: #ef4444; color: white;
+    padding: 2px 8px; border-radius: 50px; font-size: 0.62rem;
+    font-weight: 700; animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+.badge-count {
+    padding: 5px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 700;
+}
+.badge-warning { background: rgba(245,158,11,0.1); color: #f59e0b; }
+
+.status-pill {
+    padding: 4px 12px; border-radius: 50px; font-size: 0.72rem; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 5px;
+}
+.status-en_attente { background: rgba(245,158,11,0.08); color: #f59e0b; }
+
+/* ========== ACTION GROUP ========== */
+.action-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ========== LEGEND ========== */
+.legend-card {
+    background: var(--bg-card); border-radius: var(--radius-lg);
+    padding: 20px 24px; border: 1px solid var(--border-color);
+}
+.legend-card h6 {
+    font-size: 0.9rem; font-weight: 600; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+}
+.legend-items { display: flex; flex-direction: column; gap: 14px; }
+.legend-item {
+    display: flex; gap: 14px; align-items: flex-start;
+}
+.legend-icon {
+    width: 40px; height: 40px; min-width: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 0.85rem;
+}
+.bg-info { background: #3b82f6; }
+.bg-success { background: #10b981; }
+.bg-danger { background: #ef4444; }
+.legend-item strong { display: block; font-size: 0.83rem; margin-bottom: 2px; }
+.legend-item p {
+    font-size: 0.75rem; color: var(--text-secondary); margin: 0; line-height: 1.4;
+}
+
+/* ========== ALERTES ========== */
+.alert {
+    border: none; border-radius: var(--radius); padding: 14px 18px;
+    font-weight: 500; display: flex; align-items: flex-start; gap: 10px;
+}
+.alert div { flex: 1; }
+.alert-success { background: rgba(16,185,129,0.08); color: #10b981; }
+.alert-danger { background: rgba(239,68,68,0.08); color: #ef4444; }
+.alert-warning { background: rgba(245,158,11,0.08); color: #f59e0b; }
+.alert-info { background: rgba(59,130,246,0.08); color: #3b82f6; }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 992px) {
+    .validation-stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+    .validation-stats { grid-template-columns: 1fr; }
+    .action-group { flex-direction: column; }
+    .action-group .btn { width: 100%; }
+}

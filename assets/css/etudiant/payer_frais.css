@@ -1,0 +1,1032 @@
+/* ============================================================
+   ISTAM PAIEMENT - PAYER FRAIS (ÉTUDIANT)
+   Version complète avec styles SPA
+   ============================================================ */
+
+/* ========== VARIABLES ========== */
+:root {
+    --primary: #3b82f6;
+    --primary-dark: #2563eb;
+    --success: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --info: #6366f1;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --bg-card: #ffffff;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --radius: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --transition: all 0.2s ease;
+}
+
+/* ========== PAGE HEADER ========== */
+.page-header {
+    margin-bottom: 24px;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+}
+
+.page-title i {
+    color: var(--success);
+    font-size: 1.6rem;
+}
+
+.page-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+/* ========== ALERTE ========== */
+.paiement-alert {
+    padding: 20px 24px;
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+}
+
+.paiement-alert .alert-content {
+    line-height: 1.8;
+}
+
+/* ========== RÉSUMÉ ÉTUDIANT ========== */
+.resume-paiement {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.resume-item-paiement {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.resume-item-paiement:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.resume-item-paiement i {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 10px;
+    background: rgba(59, 130, 246, 0.08);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+.resume-item-paiement .resume-label {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.resume-item-paiement strong {
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* ========== PAIEMENT GRID ========== */
+.paiement-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+/* ========== COLONNE FRAIS ========== */
+.section-title-paiement {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+}
+
+.badge-count-sm {
+    padding: 3px 10px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--warning);
+}
+
+/* Liste des frais */
+.frais-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.frais-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.frais-list::-webkit-scrollbar-track {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+.frais-list::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+.frais-list.payes {
+    max-height: 200px;
+    opacity: 0.85;
+}
+
+/* Item de frais */
+.frais-item-paiement {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.frais-item-paiement:hover {
+    border-color: var(--primary);
+    box-shadow: var(--shadow);
+    transform: translateX(2px);
+}
+
+.frais-item-paiement.selected {
+    border-color: var(--primary);
+    background: rgba(59, 130, 246, 0.03);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.frais-deja-paye {
+    border-color: var(--success);
+    background: #f0fdf4;
+    cursor: default;
+    opacity: 0.8;
+}
+
+.frais-deja-paye:hover {
+    border-color: var(--success);
+    transform: none;
+    box-shadow: none;
+}
+
+.frais-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.frais-item-header h5 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.frais-montant-item {
+    text-align: right;
+}
+
+.montant-usd-item {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+    display: block;
+}
+
+.montant-fc-item {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+}
+
+.taux-info-item {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+}
+
+.badge-paye-sm {
+    font-size: 0.68rem;
+    color: var(--success);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Carte "tout payé" */
+.all-paid-card {
+    text-align: center;
+    padding: 40px 20px;
+    background: #f0fdf4;
+    border-radius: var(--radius-lg);
+    border: 2px dashed var(--success);
+}
+
+.all-paid-card i {
+    font-size: 3rem;
+    color: var(--success);
+    margin-bottom: 12px;
+    display: block;
+}
+
+.all-paid-card h4 {
+    color: #065f46;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.all-paid-card p {
+    color: #047857;
+    font-size: 0.85rem;
+}
+
+/* ========== COLONNE PAIEMENT ========== */
+.paiement-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    position: sticky;
+    top: 90px;
+    overflow: hidden;
+}
+
+.paiement-card-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(135deg, #f8fafc, #eff6ff);
+}
+
+.paiement-card-header h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+}
+
+.paiement-card-header h3 i {
+    color: var(--primary);
+}
+
+.paiement-card-body {
+    padding: 22px;
+}
+
+/* Aucun frais sélectionné */
+.no-frais-selected {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+}
+
+.no-frais-selected i {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    display: block;
+    opacity: 0.4;
+}
+
+.no-frais-selected h4 {
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    font-size: 1rem;
+}
+
+.no-frais-selected p {
+    font-size: 0.8rem;
+    margin: 0;
+}
+
+/* Détails du frais sélectionné */
+.frais-details-paiement {
+    background: #f8fafc;
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 18px;
+    border: 1px solid var(--border-color);
+}
+
+.frais-details-paiement h5 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.detail-montants {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 6px;
+}
+
+.detail-montant-usd,
+.detail-montant-fc {
+    flex: 1;
+}
+
+.detail-label {
+    display: block;
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-montant-usd strong {
+    font-size: 1.2rem;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.detail-montant-fc strong {
+    font-size: 1.2rem;
+    color: #92400e;
+    font-weight: 700;
+}
+
+.detail-taux {
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+}
+
+/* Choix de la devise */
+.devise-choix {
+    margin-bottom: 18px;
+}
+
+.form-label-paiement {
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.devise-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.devise-option input {
+    display: none;
+}
+
+.devise-card {
+    display: block;
+    padding: 14px 12px;
+    text-align: center;
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.devise-card:hover {
+    border-color: var(--primary);
+    background: rgba(59, 130, 246, 0.02);
+}
+
+.devise-option input:checked + .devise-card {
+    border-color: var(--primary);
+    background: rgba(59, 130, 246, 0.04);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.08);
+}
+
+.devise-card i {
+    font-size: 1.3rem;
+    color: var(--primary);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.devise-card strong {
+    display: block;
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.devise-card small {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Section téléphone */
+.telephone-section {
+    margin-bottom: 18px;
+}
+
+.telephone-section .form-control {
+    font-size: 0.9rem;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 2px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.telephone-section .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.operateur-detecte {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #f0fdf4;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: #065f46;
+}
+
+.operateur-detecte i {
+    color: var(--success);
+}
+
+/* Récapitulatif */
+.recap-paiement {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 18px;
+}
+
+.recap-paiement h6 {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #92400e;
+}
+
+.recap-ligne {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 0.8rem;
+    color: #78716c;
+}
+
+.recap-ligne:last-child {
+    border-top: 1px solid #fde68a;
+    margin-top: 4px;
+    padding-top: 8px;
+}
+
+.recap-ligne strong {
+    color: var(--warning);
+    font-weight: 700;
+}
+
+/* Bouton de paiement */
+.btn-payer-submit {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--success), #059669);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.btn-payer-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(16, 185, 129, 0.4);
+}
+
+.btn-payer-submit:active {
+    transform: translateY(0);
+}
+
+.paiement-securise {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.paiement-securise i {
+    color: var(--success);
+}
+
+/* ========== STYLES SPA - VÉRIFICATION ========== */
+.verification-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+    padding: 35px 25px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.verif-header {
+    margin-bottom: 20px;
+}
+
+.verif-spinner,
+.verif-check,
+.verif-failed {
+    margin-bottom: 15px;
+}
+
+.verif-spinner i {
+    font-size: 3.5rem;
+    color: var(--info);
+}
+
+.verif-check i {
+    font-size: 3.5rem;
+    color: var(--success);
+    animation: scaleIn 0.5s ease;
+}
+
+.verif-failed i {
+    font-size: 3.5rem;
+    color: var(--danger);
+    animation: scaleIn 0.5s ease;
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.verif-header h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.verif-body {
+    text-align: left;
+}
+
+.verif-info {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 20px;
+}
+
+.verif-info p {
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+}
+
+.verif-info p:last-child {
+    margin-bottom: 0;
+}
+
+.verif-info strong {
+    color: var(--text-primary);
+    width: 90px;
+    display: inline-block;
+}
+
+.verif-info code {
+    background: #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+}
+
+.verif-progress {
+    max-width: 350px;
+    margin: 0 auto;
+}
+
+.verif-progress .progress {
+    height: 6px;
+    border-radius: 3px;
+    background-color: var(--border-color);
+}
+
+.verif-progress .progress-bar {
+    background-color: var(--info);
+    transition: width 0.3s ease;
+}
+
+.verif-actions {
+    text-align: center;
+}
+
+.verif-actions .btn-primary {
+    background: var(--primary);
+    border: none;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.verif-actions .btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* Badge orange */
+.bg-orange {
+    background-color: var(--warning) !important;
+    color: white;
+}
+
+/* ========== CARTE DE SUCCÈS ========== */
+.succes-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    border: 2px solid var(--success);
+    box-shadow: 0 0 50px rgba(16, 185, 129, 0.2);
+    padding: 35px 25px;
+    text-align: center;
+    animation: fadeIn 0.4s ease;
+}
+
+.succes-icon {
+    margin-bottom: 20px;
+}
+
+.succes-icon i {
+    font-size: 4.5rem;
+    color: var(--success);
+    animation: scaleIn 0.6s ease;
+}
+
+.succes-card h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #065f46;
+    margin-bottom: 10px;
+}
+
+.succes-card p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.succes-details {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin: 15px 0;
+}
+
+.succes-details div {
+    text-align: center;
+}
+
+.succes-details span {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.succes-details strong {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--success);
+}
+
+.succes-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.succes-actions .btn-primary {
+    background: var(--success);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.succes-actions .btn-primary:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+.succes-actions .btn-outline-primary {
+    border: 2px solid var(--success);
+    color: var(--success);
+    background: transparent;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.succes-actions .btn-outline-primary:hover {
+    background: var(--success);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* ========== CARTE D'ÉCHEC ========== */
+.echec-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    border: 2px solid var(--danger);
+    padding: 35px 25px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.echec-icon {
+    margin-bottom: 15px;
+}
+
+.echec-icon i {
+    font-size: 4rem;
+    color: var(--danger);
+    animation: scaleIn 0.5s ease;
+}
+
+.echec-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #b91c1c;
+    margin-bottom: 10px;
+}
+
+.echec-card p {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.echec-card .btn-primary {
+    background: var(--danger);
+    border: none;
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.echec-card .btn-primary:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 992px) {
+    .paiement-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .resume-paiement {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .paiement-card {
+        position: static;
+    }
+    
+    .verification-card,
+    .succes-card,
+    .echec-card {
+        padding: 25px 20px;
+        margin: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .succes-details {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .devise-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-montants {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .succes-card h2 {
+        font-size: 1.3rem;
+    }
+    
+    .echec-card h2 {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .resume-paiement {
+        grid-template-columns: 1fr;
+    }
+    
+    .verification-card,
+    .succes-card,
+    .echec-card {
+        padding: 20px 15px;
+        margin: 15px;
+    }
+    
+    .verif-info p {
+        font-size: 0.75rem;
+    }
+    
+    .verif-info strong {
+        width: auto;
+        display: block;
+        margin-bottom: 2px;
+    }
+    
+    .succes-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .succes-actions .btn-primary,
+    .succes-actions .btn-outline-primary {
+        width: 100%;
+    }
+    
+    .echec-card {
+        padding: 25px 15px;
+    }
+    
+    .page-title {
+        font-size: 1.2rem;
+    }
+    
+    .frais-list {
+        max-height: 350px;
+    }
+    
+    .succes-icon i,
+    .verif-spinner i,
+    .verif-check i,
+    .verif-failed i,
+    .echec-icon i {
+        font-size: 3rem;
+    }
+    
+    .succes-card h2 {
+        font-size: 1.1rem;
+    }
+}
+
+/* ========== ANIMATIONS SUPPLEMENTAIRES ========== */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.verif-spinner i {
+    animation: fa-spin 2s infinite linear;
+}
+
+.progress-bar-animated {
+    animation: progress-bar-stripes 1s linear infinite;
+}
+
+@keyframes progress-bar-stripes {
+    0% {
+        background-position: 1rem 0;
+    }
+    100% {
+        background-position: 0 0;
+    }
+}
+
+/* ========== UTILITAIRES ========== */
+.text-success {
+    color: var(--success) !important;
+}
+
+.text-danger {
+    color: var(--danger) !important;
+}
+
+.text-warning {
+    color: var(--warning) !important;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 30px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+
+.badge.bg-warning {
+    background-color: var(--warning) !important;
+    color: white;
+}
+
+.badge.bg-success {
+    background-color: var(--success) !important;
+    color: white;
+}
+
+.badge.bg-danger {
+    background-color: var(--danger) !important;
+    color: white;
+}
+
+/* ========== LOADING SPINNER ========== */
+.fa-spin {
+    animation: fa-spin 2s infinite linear;
+}
+
+@keyframes fa-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(359deg);
+    }
+}
