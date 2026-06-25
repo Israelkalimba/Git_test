@@ -276,7 +276,7 @@ $notifications = $stmt->fetchAll();
                     </div>
                     <div class="chart-card">
                         <div class="chart-card-header">
-                            <h3><i class="fas fa-chart-pie"></i> Répartition par Faculté</h3>
+                            <h3><i class="fas fa-chart-pie"></i> Répartition par Département</h3>
                         </div>
                         <div class="chart-card-body">
                             <canvas id="chartFacultes"></canvas>

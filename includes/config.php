@@ -1,14 +1,14 @@
 <?php
+
 /**
  * CONFIGURATION GLOBALE DU PROJET ISTAM_PAIEMENT
  */
 
 // Paramètres de la base de données
-define('DB_HOST', 'localhost');
+define('DB_HOST', 'db');
 define('DB_NAME', 'istam_paiement');
-define('DB_USER', 'root');
-define('DB_PASS', ''); // Par défaut vide sur Wamp/Xampp
-
+define('DB_USER', 'IZOU');
+define('DB_PASS', 'Izou@2026');
 // Clé API de paiement
 define('PAYMENT_API_KEY', 'pl_htSEOb8G7VojrKRHKNHEcQySHqHKYxzldZkLsBU3');
 

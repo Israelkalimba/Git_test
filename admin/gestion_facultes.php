@@ -21,18 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         try {
             $stmt = $db->prepare("INSERT INTO facultes (nom_faculte) VALUES (:nom)");
             $stmt->execute(['nom' => $nom_faculte]);
-            $message = "Faculté ajoutée avec succès !";
+            $message = "Departement ajouté avec succès !";
             $message_type = 'success';
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) {
-                $message = "Cette faculté existe déjà.";
+                $message = "Ce Departement existe déjà.";
             } else {
                 $message = "Erreur lors de l'ajout : " . $e->getMessage();
             }
             $message_type = 'danger';
         }
     } else {
-        $message = "Le nom de la faculté est obligatoire.";
+        $message = "Le nom du Departement est obligatoire.";
         $message_type = 'warning';
     }
 }
@@ -46,11 +46,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         try {
             $stmt = $db->prepare("UPDATE facultes SET nom_faculte = :nom WHERE id_faculte = :id");
             $stmt->execute(['nom' => $nom_faculte, 'id' => $id_faculte]);
-            $message = "Faculté modifiée avec succès !";
+            $message = "Departement modifiée avec succès !";
             $message_type = 'success';
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) {
-                $message = "Une faculté avec ce nom existe déjà.";
+                $message = "Un Departement avec ce nom existe déjà.";
             } else {
                 $message = "Erreur lors de la modification.";
             }
@@ -69,12 +69,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'supprimer' && isset($_GET['id
     $count = $stmt->fetch()['total'] ?? 0;
     
     if ($count > 0) {
-        $message = "Impossible de supprimer cette faculté car elle contient {$count} filière(s). Supprimez d'abord les filières associées.";
+        $message = "Impossible de supprimer ce Departement car il contient {$count} filière(s). Supprimez d'abord les filières associées.";
         $message_type = 'warning';
     } else {
         $stmt = $db->prepare("DELETE FROM facultes WHERE id_faculte = :id");
         $stmt->execute(['id' => $id_faculte]);
-        $message = "Faculté supprimée avec succès !";
+        $message = "Departement supprimé avec succès !";
         $message_type = 'success';
     }
 }
@@ -136,16 +136,16 @@ $navbar_notifications = $stmt->fetchAll();
                     <div class="row align-items-center">
                         <div class="col-lg-6">
                             <h1 class="page-title">
-                                <i class="fas fa-university"></i> Gestion des Facultés
+                                <i class="fas fa-university"></i> Gestion des Départements
                             </h1>
                             <p class="page-subtitle">
                                 <i class="fas fa-info-circle"></i> 
-                                Gérez les facultés de l'établissement. Les filières et promotions sont rattachées aux facultés.
+                                Gérez les Départements de l'établissement. Les filières et promotions sont rattachées aux Departements.
                             </p>
                         </div>
                         <div class="col-lg-6 text-lg-end mt-3 mt-lg-0">
                             <button class="btn btn-primary btn-ajouter" onclick="ouvrirModalAjouter()">
-                                <i class="fas fa-plus-circle"></i> Ajouter une faculté
+                                <i class="fas fa-plus-circle"></i> Ajouter un Departement
                             </button>
                             <a href="gestion_filieres.php" class="btn btn-outline-secondary ms-2">
                                 <i class="fas fa-layer-group"></i> Gérer les filières
@@ -171,7 +171,7 @@ $navbar_notifications = $stmt->fetchAll();
                         </div>
                         <div class="stat-mini-info">
                             <h4><?= count($facultes) ?></h4>
-                            <p>Facultés</p>
+                            <p>Département</p>
                         </div>
                     </div>
                     <div class="stat-mini-card">
@@ -203,13 +203,13 @@ $navbar_notifications = $stmt->fetchAll();
                 <!-- Tableau des facultés -->
                 <div class="table-card">
                     <div class="table-card-header">
-                        <h3><i class="fas fa-list"></i> Liste des facultés</h3>
+                        <h3><i class="fas fa-list"></i> Liste des départements</h3>
                         <div class="table-actions">
                             <div class="search-table">
                                 <i class="fas fa-search"></i>
-                                <input type="text" id="searchTable" placeholder="Rechercher une faculté..." class="form-control form-control-sm">
+                                <input type="text" id="searchTable" placeholder="Rechercher un Departement..." class="form-control form-control-sm">
                             </div>
-                            <span class="badge-count badge-info"><?= count($facultes) ?> faculté(s)</span>
+                            <span class="badge-count badge-info"><?= count($facultes) ?> Département(s)</span>
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -217,7 +217,7 @@ $navbar_notifications = $stmt->fetchAll();
                             <thead>
                                 <tr>
                                     <th width="80">#ID</th>
-                                    <th>Nom de la faculté</th>
+                                    <th>Nom du Departement</th>
                                     <th width="120">Filières</th>
                                     <th width="120">Étudiants</th>
                                     <th width="150">Date de création</th>
@@ -230,10 +230,10 @@ $navbar_notifications = $stmt->fetchAll();
                                         <td colspan="6">
                                             <div class="empty-state py-5">
                                                 <i class="fas fa-university fa-3x"></i>
-                                                <h4 class="mt-3">Aucune faculté enregistrée</h4>
-                                                <p class="text-muted">Commencez par ajouter votre première faculté.</p>
+                                                <h4 class="mt-3">Aucun Departement enregistré</h4>
+                                                <p class="text-muted">Commencez par ajouter votre premier Departement.</p>
                                                 <button class="btn btn-primary" onclick="ouvrirModalAjouter()">
-                                                    <i class="fas fa-plus-circle"></i> Ajouter une faculté
+                                                    <i class="fas fa-plus-circle"></i> Ajouter un Departement
                                                 </button>
                                             </div>
                                         </td>
@@ -299,7 +299,7 @@ $navbar_notifications = $stmt->fetchAll();
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        <i class="fas fa-plus-circle text-primary"></i> Ajouter une faculté
+                        <i class="fas fa-plus-circle text-primary"></i> Ajouter un Departement
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -308,10 +308,10 @@ $navbar_notifications = $stmt->fetchAll();
                         <input type="hidden" name="action" value="ajouter">
                         <div class="form-group">
                             <label for="nomFaculteAjout" class="form-label">
-                                <i class="fas fa-university"></i> Nom de la faculté <span class="text-danger">*</span>
+                                <i class="fas fa-university"></i> Nom du Departement <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control form-control-lg" id="nomFaculteAjout" 
-                                   name="nom_faculte" placeholder="Ex: Faculté des Sciences" required autofocus>
+                                   name="nom_faculte" placeholder="Ex: Departement des Sciences informatique" required autofocus>
                             <small class="form-text text-muted">
                                 <i class="fas fa-info-circle"></i> Le nom doit être unique.
                             </small>
@@ -336,7 +336,7 @@ $navbar_notifications = $stmt->fetchAll();
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        <i class="fas fa-edit text-warning"></i> Modifier la faculté
+                        <i class="fas fa-edit text-warning"></i> Modifier le Departement
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
@@ -346,7 +346,7 @@ $navbar_notifications = $stmt->fetchAll();
                         <input type="hidden" name="id_faculte" id="modifierIdFaculte">
                         <div class="form-group">
                             <label for="nomFaculteModif" class="form-label">
-                                <i class="fas fa-university"></i> Nom de la faculté <span class="text-danger">*</span>
+                                <i class="fas fa-university"></i> Nom du Departement <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control form-control-lg" id="nomFaculteModif" 
                                    name="nom_faculte" required>
@@ -377,7 +377,7 @@ $navbar_notifications = $stmt->fetchAll();
                 </div>
                 <div class="modal-body text-center">
                     <i class="fas fa-trash-alt fa-4x text-danger mb-3"></i>
-                    <h5>Êtes-vous sûr de vouloir supprimer cette faculté ?</h5>
+                    <h5>Êtes-vous sûr de vouloir supprimer ce Departement ?</h5>
                     <p class="text-muted" id="supprimerNomFaculte"></p>
                     <div class="alert alert-warning" id="alertFilieres" style="display:none;">
                         <i class="fas fa-exclamation-triangle"></i>

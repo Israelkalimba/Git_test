@@ -1,6 +1,6 @@
 // ========== INITIALIZATION ==========
-document.addEventListener('DOMContentLoaded', function() {
-    initAOS();
+document.addEventListener('DOMContentLoaded', function () {
+    scheduleAOSInit();
     initNavbarScroll();
     initBackToTop();
     initTechProgress();
@@ -8,20 +8,29 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ========== AOS INITIALIZATION ==========
-function initAOS() {
-    AOS.init({
-        duration: 1000,
-        easing: 'ease-in-out',
-        once: true,
-        mirror: false
-    });
+function scheduleAOSInit() {
+    const start = () => {
+        if (typeof AOS === 'undefined') return;
+        AOS.init({
+            duration: 1000,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+    };
+
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(start, { timeout: 1200 });
+    } else {
+        setTimeout(start, 200);
+    }
 }
 
 // ========== NAVBAR SCROLL ==========
 function initNavbarScroll() {
     const navbar = document.querySelector('.navbar');
-    
-    window.addEventListener('scroll', function() {
+
+    window.addEventListener('scroll', function () {
         if (window.scrollY > 50) {
             navbar.style.padding = '10px 0';
             navbar.style.boxShadow = '0 5px 30px rgba(0, 0, 0, 0.15)';
@@ -29,13 +38,13 @@ function initNavbarScroll() {
             navbar.style.padding = '15px 0';
             navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
         }
-    });
+    }, { passive: true });
 }
 
 // ========== TECH PROGRESS ANIMATION ==========
 function initTechProgress() {
     const progressBars = document.querySelectorAll('.progress-bar');
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -48,7 +57,7 @@ function initTechProgress() {
             }
         });
     }, { threshold: 0.5 });
-    
+
     progressBars.forEach(bar => {
         observer.observe(bar);
     });
@@ -57,7 +66,7 @@ function initTechProgress() {
 // ========== TIMELINE ANIMATION ==========
 function initTimelineAnimation() {
     const timelineItems = document.querySelectorAll('.timeline-item');
-    
+
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -67,7 +76,7 @@ function initTimelineAnimation() {
             }
         });
     }, { threshold: 0.2 });
-    
+
     timelineItems.forEach(item => {
         item.style.opacity = '0';
         item.style.transform = 'translateY(30px)';
@@ -83,7 +92,7 @@ function initBackToTop() {
     backToTopBtn.className = 'back-to-top';
     backToTopBtn.setAttribute('aria-label', 'Retour en haut');
     document.body.appendChild(backToTopBtn);
-    
+
     const style = document.createElement('style');
     style.textContent = `
         .back-to-top {
@@ -118,16 +127,16 @@ function initBackToTop() {
         }
     `;
     document.head.appendChild(style);
-    
-    window.addEventListener('scroll', function() {
+
+    window.addEventListener('scroll', function () {
         if (window.scrollY > 500) {
             backToTopBtn.classList.add('show');
         } else {
             backToTopBtn.classList.remove('show');
         }
     });
-    
-    backToTopBtn.addEventListener('click', function() {
+
+    backToTopBtn.addEventListener('click', function () {
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
@@ -136,12 +145,12 @@ function initBackToTop() {
 }
 
 // ========== PARALLAX EFFECT ==========
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', function () {
     const hero = document.querySelector('.about-hero');
     if (hero) {
         const scrollPosition = window.pageYOffset;
         hero.style.backgroundPositionY = `${scrollPosition * 0.5}px`;
     }
-});
+}, { passive: true });
 
 console.log('📄 Page À Propos ISTAM initialisée avec succès');

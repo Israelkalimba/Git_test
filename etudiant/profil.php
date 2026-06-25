@@ -309,7 +309,7 @@ $navbar_notifications = $stmt_nav->fetchAll();
                                                value="<?= htmlspecialchars($telephone ?? '') ?>" 
                                                placeholder="+243..." required>
                                         <small class="text-muted">
-                                            <i class="fas fa-info-circle"></i> Ce numéro sera utilisé pour les paiements Mobile Money.
+                                            <i class="fas fa-info-circle"></i> Pour contacter l'etudiant
                                         </small>
                                     </div>
                                     

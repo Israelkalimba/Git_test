@@ -6,6 +6,7 @@ require_once '../../includes/Database.php';
 // Chargement de PHPMailer depuis vendor
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+
 require_once '../../vendor/autoload.php';
 
 // Configuration email (identiques à celles utilisées dans payer_frais.php)
@@ -35,15 +36,16 @@ curl_setopt_array($ch, [
 ]);
 $response = curl_exec($ch);
 $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$curlError = curl_error($ch);
 curl_close($ch);
 
-if ($httpCode === 200) {
+if ($httpCode === 200 && $response !== false) {
     $data = json_decode($response, true);
     $statut_api = $data['status'] ?? 'pending';
-    
+
     if ($statut_api === 'successful') {
         $db = Database::getInstance();
-        
+
         // Mise à jour du paiement et de la transaction mobile money
         if ($id_paiement > 0) {
             $stmt = $db->prepare("UPDATE paiements SET statut = 'succes' WHERE id_paiement = :id AND statut = 'en_attente'");
@@ -51,9 +53,10 @@ if ($httpCode === 200) {
             $stmt = $db->prepare("UPDATE transaction_mobile_money SET statut_api = 'successful' WHERE id_paiement = :id");
             $stmt->execute(['id' => $id_paiement]);
         }
-        
+
         // Récupération de toutes les informations nécessaires pour les emails
-        $stmt = $db->prepare("
+        $stmt = $db->prepare(
+            "
             SELECT p.*, u.nom, u.email, u.id_utilisateur, f.type_frais, e.matricule, e.telephone
             FROM paiements p 
             JOIN etudiants e ON p.id_etudiant = e.id_etudiant 
@@ -67,14 +70,14 @@ if ($httpCode === 200) {
             $stmt->execute(['ref' => $notre_ref]);
         }
         $paiement = $stmt->fetch();
-        
+
         if ($paiement) {
             // --- 1. Notification interne (base de données) ---
             // Étudiant
             $msg_etudiant = "✅ Paiement CONFIRMÉ : {$paiement['type_frais']} - \${$paiement['montant_paye']}. Reçu disponible dans votre espace.";
             $stmt = $db->prepare("INSERT INTO notifications (id_utilisateur, message, statut) VALUES (:uid, :msg, 'non_lu')");
             $stmt->execute(['uid' => $paiement['id_utilisateur'], 'msg' => $msg_etudiant]);
-            
+
             // Administrateur et secrétaires
             $stmt_roles = $db->query("SELECT id_utilisateur FROM utilisateurs WHERE role IN ('admin', 'secretaire') AND statut_compte = 'actif'");
             $admins_secs = $stmt_roles->fetchAll();
@@ -83,9 +86,9 @@ if ($httpCode === 200) {
                 $stmt = $db->prepare("INSERT INTO notifications (id_utilisateur, message, statut) VALUES (:uid, :msg, 'non_lu')");
                 $stmt->execute(['uid' => $user['id_utilisateur'], 'msg' => $msg_admin]);
             }
-            
+
             // --- 2. Envoi des emails avec PHPMailer ---
-            
+
             // 2.1 Email à l'étudiant (confirmation personnalisée)
             if (!empty($paiement['email'])) {
                 $sujet_etudiant = "✅ Félicitations ! Votre paiement à l'ISTAM est confirmé";
@@ -97,7 +100,7 @@ if ($httpCode === 200) {
                 );
                 envoyerEmail($paiement['email'], $paiement['nom'], $sujet_etudiant, $corps_etudiant, $email_admin_sender, $email_password, $nom_expediteur);
             }
-            
+
             // 2.2 Email à l'administrateur (très détaillé, personnel)
             $sujet_admin = "📢 ISTAM - Nouveau paiement reçu de {$paiement['nom']}";
             $corps_admin = genererEmailAdmin(
@@ -109,7 +112,7 @@ if ($httpCode === 200) {
                 $paiement['telephone']
             );
             envoyerEmail($email_admin_sender, 'Administrateur ISTAM', $sujet_admin, $corps_admin, $email_admin_sender, $email_password, $nom_expediteur);
-            
+
             // 2.3 Email à tous les gestionnaires (secrétaires)
             $stmt_sec = $db->query("SELECT email, nom FROM utilisateurs WHERE role = 'secretaire' AND statut_compte = 'actif' AND email IS NOT NULL AND email != ''");
             $secretaires = $stmt_sec->fetchAll();
@@ -126,31 +129,37 @@ if ($httpCode === 200) {
                 envoyerEmail($sec['email'], $sec['nom'], $sujet_sec, $corps_sec, $email_admin_sender, $email_password, $nom_expediteur);
             }
         }
-        
+
         echo json_encode([
             'status' => 'successful',
             'montant' => $paiement['montant_paye'] ?? 0,
             'notre_ref' => $notre_ref
         ]);
-        
     } else {
         echo json_encode([
             'status' => $statut_api,
             'message' => 'Paiement en attente ou échoué'
         ]);
     }
-    
 } else {
+    $message = 'Erreur API (HTTP ' . $httpCode . ')';
+    if (!empty($curlError)) {
+        $message = 'Impossible de vérifier le paiement. Détail : ' . $curlError;
+    } elseif (!empty($response)) {
+        $decoded = json_decode($response, true);
+        $message = $decoded['message'] ?? $decoded['error'] ?? $message;
+    }
     echo json_encode([
         'status' => 'error',
-        'message' => 'Erreur API (HTTP ' . $httpCode . ')'
+        'message' => $message
     ]);
 }
 
 /**
  * Envoie un email via PHPMailer (SMTP Gmail)
  */
-function envoyerEmail($destinataire, $nom_destinataire, $sujet, $corps_html, $email_admin, $email_password, $nom_expediteur) {
+function envoyerEmail($destinataire, $nom_destinataire, $sujet, $corps_html, $email_admin, $email_password, $nom_expediteur)
+{
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
@@ -161,14 +170,14 @@ function envoyerEmail($destinataire, $nom_destinataire, $sujet, $corps_html, $em
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
         $mail->CharSet = 'UTF-8';
-        
+
         $mail->setFrom($email_admin, $nom_expediteur);
         $mail->addAddress($destinataire, $nom_destinataire);
         $mail->isHTML(true);
         $mail->Subject = $sujet;
         $mail->Body = $corps_html;
         $mail->AltBody = strip_tags($corps_html);
-        
+
         $mail->send();
         return true;
     } catch (Exception $e) {
@@ -180,7 +189,8 @@ function envoyerEmail($destinataire, $nom_destinataire, $sujet, $corps_html, $em
 /**
  * Email pour l'étudiant (félicitations, détails du paiement, pas de lien)
  */
-function genererEmailEtudiant($nom, $type_frais, $montant_usd, $reference) {
+function genererEmailEtudiant($nom, $type_frais, $montant_usd, $reference)
+{
     $montant_fc = $montant_usd * 2300; // taux par défaut
     return "
     <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 16px;'>
@@ -212,7 +222,8 @@ function genererEmailEtudiant($nom, $type_frais, $montant_usd, $reference) {
 /**
  * Email pour l'administrateur (très détaillé, personnel)
  */
-function genererEmailAdmin($nom_etudiant, $matricule, $type_frais, $montant_usd, $reference, $telephone) {
+function genererEmailAdmin($nom_etudiant, $matricule, $type_frais, $montant_usd, $reference, $telephone)
+{
     $montant_fc = $montant_usd * 2300;
     return "
     <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 16px;'>
@@ -245,7 +256,8 @@ function genererEmailAdmin($nom_etudiant, $matricule, $type_frais, $montant_usd,
 /**
  * Email pour les secrétaires / gestionnaires (détails opérationnels)
  */
-function genererEmailSecretaire($nom_sec, $nom_etudiant, $matricule, $type_frais, $montant_usd, $reference) {
+function genererEmailSecretaire($nom_sec, $nom_etudiant, $matricule, $type_frais, $montant_usd, $reference)
+{
     $montant_fc = $montant_usd * 2300;
     return "
     <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 16px;'>

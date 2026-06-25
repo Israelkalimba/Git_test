@@ -1,6 +1,6 @@
 // ========== INITIALIZATION ==========
-document.addEventListener('DOMContentLoaded', function() {
-    initAOS();
+document.addEventListener('DOMContentLoaded', function () {
+    scheduleAOSInit();
     initNavbarScroll();
     initSmoothScroll();
     initStatCounter();
@@ -8,32 +8,41 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ========== AOS INITIALIZATION ==========
-function initAOS() {
-    AOS.init({
-        duration: 1000,
-        easing: 'ease-in-out',
-        once: true,
-        mirror: false
-    });
+function scheduleAOSInit() {
+    const start = () => {
+        if (typeof AOS === 'undefined') return;
+        AOS.init({
+            duration: 1000,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+    };
+
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(start, { timeout: 1200 });
+    } else {
+        setTimeout(start, 200);
+    }
 }
 
 // ========== NAVBAR SCROLL EFFECT ==========
 function initNavbarScroll() {
     const navbar = document.querySelector('.navbar');
-    
-    window.addEventListener('scroll', function() {
+
+    window.addEventListener('scroll', function () {
         if (window.scrollY > 50) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
         }
-    });
+    }, { passive: true });
 }
 
 // ========== SMOOTH SCROLL ==========
 function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+        anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
             if (target) {
@@ -56,10 +65,10 @@ function initSmoothScroll() {
 function initStatCounter() {
     const statValues = document.querySelectorAll('.stat-value');
     let started = false;
-    
+
     function animateStats() {
         if (started) return;
-        
+
         statValues.forEach(stat => {
             const target = parseInt(stat.getAttribute('data-count'));
             const duration = 2000;
@@ -67,7 +76,7 @@ function initStatCounter() {
             const increment = target / steps;
             let current = 0;
             const stepTime = duration / steps;
-            
+
             const counter = setInterval(() => {
                 current += increment;
                 if (current >= target) {
@@ -78,10 +87,10 @@ function initStatCounter() {
                 }
             }, stepTime);
         });
-        
+
         started = true;
     }
-    
+
     // Intersection Observer pour déclencher l'animation quand visible
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -91,7 +100,7 @@ function initStatCounter() {
             }
         });
     }, { threshold: 0.5 });
-    
+
     const statsSection = document.querySelector('#statistiques');
     if (statsSection) {
         observer.observe(statsSection);
@@ -101,18 +110,18 @@ function initStatCounter() {
 // ========== CAROUSEL MANUAL CONTROLS ==========
 function initCarouselAutoPlay() {
     const carousel = document.getElementById('mainCarousel');
-    
+
     if (carousel) {
         // Pause au survol
-        carousel.addEventListener('mouseenter', function() {
+        carousel.addEventListener('mouseenter', function () {
             const bsCarousel = bootstrap.Carousel.getInstance(carousel);
             if (bsCarousel) {
                 bsCarousel.pause();
             }
         });
-        
+
         // Reprendre quand la souris quitte
-        carousel.addEventListener('mouseleave', function() {
+        carousel.addEventListener('mouseleave', function () {
             const bsCarousel = bootstrap.Carousel.getInstance(carousel);
             if (bsCarousel) {
                 bsCarousel.cycle();
@@ -123,11 +132,11 @@ function initCarouselAutoPlay() {
 
 // ========== SERVICE CARD HOVER EFFECT ==========
 document.querySelectorAll('.service-card').forEach(card => {
-    card.addEventListener('mouseenter', function() {
+    card.addEventListener('mouseenter', function () {
         this.style.transform = 'translateY(-10px)';
     });
-    
-    card.addEventListener('mouseleave', function() {
+
+    card.addEventListener('mouseleave', function () {
         if (!this.classList.contains('featured')) {
             this.style.transform = 'translateY(0)';
         } else {
@@ -137,23 +146,30 @@ document.querySelectorAll('.service-card').forEach(card => {
 });
 
 // ========== PARALLAX EFFECT ON CAROUSEL ==========
-window.addEventListener('scroll', function() {
-    const scrollPosition = window.pageYOffset;
-    const carouselItems = document.querySelectorAll('.carousel-bg');
-    
-    carouselItems.forEach(bg => {
-        const speed = 0.5;
-        bg.style.transform = `translateY(${scrollPosition * speed}px)`;
+let parallaxRaf = null;
+window.addEventListener('scroll', function () {
+    if (parallaxRaf) return;
+
+    parallaxRaf = window.requestAnimationFrame(() => {
+        const scrollPosition = window.pageYOffset;
+        const carouselItems = document.querySelectorAll('.carousel-bg');
+
+        carouselItems.forEach(bg => {
+            const speed = 0.5;
+            bg.style.transform = `translateY(${scrollPosition * speed}px)`;
+        });
+
+        parallaxRaf = null;
     });
-});
+}, { passive: true });
 
 // ========== PRELOADER (OPTIONNEL) ==========
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     document.body.classList.add('loaded');
 });
 
 // ========== KEYBOARD NAVIGATION ==========
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
         const navbarCollapse = document.querySelector('.navbar-collapse');
         if (navbarCollapse && navbarCollapse.classList.contains('show')) {
@@ -166,18 +182,18 @@ document.addEventListener('keydown', function(e) {
 function updateActiveNavLink() {
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link');
-    
+
     let currentSection = '';
-    
+
     sections.forEach(section => {
         const sectionTop = section.offsetTop - 100;
         const sectionHeight = section.offsetHeight;
-        
+
         if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
             currentSection = section.getAttribute('id');
         }
     });
-    
+
     navLinks.forEach(link => {
         link.classList.remove('active');
         if (link.getAttribute('href') === '#' + currentSection) {
@@ -186,7 +202,7 @@ function updateActiveNavLink() {
     });
 }
 
-window.addEventListener('scroll', updateActiveNavLink);
+window.addEventListener('scroll', updateActiveNavLink, { passive: true });
 
 // ========== BACK TO TOP BUTTON ==========
 // Créer le bouton
@@ -197,16 +213,16 @@ backToTopBtn.setAttribute('aria-label', 'Retour en haut');
 document.body.appendChild(backToTopBtn);
 
 // Afficher/Cacher le bouton
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', function () {
     if (window.scrollY > 500) {
         backToTopBtn.classList.add('show');
     } else {
         backToTopBtn.classList.remove('show');
     }
-});
+}, { passive: true });
 
 // Action de retour en haut
-backToTopBtn.addEventListener('click', function() {
+backToTopBtn.addEventListener('click', function () {
     window.scrollTo({
         top: 0,
         behavior: 'smooth'

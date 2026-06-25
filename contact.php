@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Contactez l'équipe ISTAM Paiement - Support, assistance et informations">
     <title>Contact - ISTAM Paiement</title>
-    
+
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -17,6 +23,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/contact.css">
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
@@ -90,7 +97,7 @@
                     <div class="contact-info-wrapper">
                         <h2 class="contact-info-title">Nos Coordonnées</h2>
                         <p class="contact-info-subtitle">Plusieurs moyens de nous joindre selon vos besoins</p>
-                        
+
                         <!-- Carte Adresse -->
                         <div class="contact-info-card">
                             <div class="contact-info-icon">
@@ -180,7 +187,7 @@
                     <div class="contact-form-wrapper">
                         <h2 class="form-title">Envoyez-nous un message</h2>
                         <p class="form-subtitle">Notre équipe vous répondra dans les plus brefs délais</p>
-                        
+
                         <form id="contactForm" class="contact-form" onsubmit="handleFormSubmit(event)">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -267,13 +274,13 @@
                             <i class="fas fa-location-dot"></i> Nous trouver
                         </h3>
                         <div class="map-container">
-                            <iframe 
+                            <iframe
                                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3978.435123456789!2d15.312345678901234!3d-4.312345678901234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNMKwMTgnNDQuNCJTIDE1wrAxOCc0NC40IkU!5e0!3m2!1sfr!2scd!4v1234567890123!5m2!1sfr!2scd"
-                                width="100%" 
-                                height="350" 
-                                style="border:0;" 
-                                allowfullscreen="" 
-                                loading="lazy" 
+                                width="100%"
+                                height="350"
+                                style="border:0;"
+                                allowfullscreen=""
+                                loading="lazy"
                                 referrerpolicy="no-referrer-when-downgrade">
                             </iframe>
                         </div>
@@ -410,8 +417,10 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script src="assets/js/contact.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" defer></script>
+    <script src="assets/js/performance.js" defer></script>
+    <script src="assets/js/contact.js" defer></script>
 </body>
+
 </html>

@@ -1,6 +1,6 @@
 // ========== INITIALIZATION ==========
-document.addEventListener('DOMContentLoaded', function() {
-    initAOS();
+document.addEventListener('DOMContentLoaded', function () {
+    scheduleAOSInit();
     initNavbarScroll();
     initBackToTop();
     initFormValidation();
@@ -8,20 +8,29 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ========== AOS ==========
-function initAOS() {
-    AOS.init({
-        duration: 1000,
-        easing: 'ease-in-out',
-        once: true,
-        mirror: false
-    });
+function scheduleAOSInit() {
+    const start = () => {
+        if (typeof AOS === 'undefined') return;
+        AOS.init({
+            duration: 1000,
+            easing: 'ease-in-out',
+            once: true,
+            mirror: false
+        });
+    };
+
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(start, { timeout: 1200 });
+    } else {
+        setTimeout(start, 200);
+    }
 }
 
 // ========== NAVBAR SCROLL ==========
 function initNavbarScroll() {
     const navbar = document.querySelector('.navbar');
-    
-    window.addEventListener('scroll', function() {
+
+    window.addEventListener('scroll', function () {
         if (window.scrollY > 50) {
             navbar.style.padding = '10px 0';
             navbar.style.boxShadow = '0 5px 30px rgba(0, 0, 0, 0.15)';
@@ -29,36 +38,36 @@ function initNavbarScroll() {
             navbar.style.padding = '15px 0';
             navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
         }
-    });
+    }, { passive: true });
 }
 
 // ========== FORM HANDLER ==========
 function handleFormSubmit(event) {
     event.preventDefault();
-    
+
     const form = document.getElementById('contactForm');
     const successMessage = document.getElementById('successMessage');
-    
+
     // Simuler un chargement
     const submitBtn = form.querySelector('.btn-submit');
     const originalText = submitBtn.querySelector('.btn-text').textContent;
     submitBtn.querySelector('.btn-text').textContent = 'Envoi en cours...';
     submitBtn.disabled = true;
-    
+
     setTimeout(() => {
         // Masquer le formulaire
         form.style.display = 'none';
-        
+
         // Afficher le message de succès
         successMessage.style.display = 'block';
-        
+
         // Réinitialiser le bouton (au cas où)
         submitBtn.querySelector('.btn-text').textContent = originalText;
         submitBtn.disabled = false;
-        
+
         // Animation de scroll vers le message
         successMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
+
         console.log('📨 Formulaire soumis avec succès (démonstration)');
     }, 1500);
 }
@@ -67,11 +76,11 @@ function handleFormSubmit(event) {
 function resetForm() {
     const form = document.getElementById('contactForm');
     const successMessage = document.getElementById('successMessage');
-    
+
     form.reset();
     form.style.display = 'block';
     successMessage.style.display = 'none';
-    
+
     form.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
@@ -79,13 +88,13 @@ function resetForm() {
 function initFormValidation() {
     const form = document.getElementById('contactForm');
     const inputs = form.querySelectorAll('input[required], textarea[required], select[required]');
-    
+
     inputs.forEach(input => {
-        input.addEventListener('blur', function() {
+        input.addEventListener('blur', function () {
             validateField(this);
         });
-        
-        input.addEventListener('input', function() {
+
+        input.addEventListener('input', function () {
             if (this.classList.contains('is-invalid')) {
                 validateField(this);
             }
@@ -105,15 +114,22 @@ function validateField(field) {
 
 // ========== STATUS SIMULATION (Ouvert/Fermé) ==========
 function initStatusSimulation() {
+    updateOpenStatusBadge();
+
+    // Un seul timer global pour eviter l'accumulation d'intervalles.
+    setInterval(updateOpenStatusBadge, 60000);
+}
+
+function updateOpenStatusBadge() {
     const statusBadge = document.querySelector('.status-badge');
     if (!statusBadge) return;
-    
+
     const now = new Date();
     const day = now.getDay(); // 0 = Dimanche, 6 = Samedi
     const hour = now.getHours();
-    
+
     let isOpen = false;
-    
+
     if (day >= 1 && day <= 5) {
         // Lundi à Vendredi : 8h-17h
         isOpen = (hour >= 8 && hour < 17);
@@ -121,12 +137,12 @@ function initStatusSimulation() {
         // Samedi : 9h-13h
         isOpen = (hour >= 9 && hour < 13);
     }
-    
+
     if (!isOpen) {
         statusBadge.classList.remove('open');
         statusBadge.classList.add('closed');
         statusBadge.innerHTML = '<span class="status-dot closed-dot"></span> Fermé actuellement';
-        
+
         // Ajouter le style pour le point fermé
         const style = document.createElement('style');
         style.textContent = `
@@ -143,10 +159,11 @@ function initStatusSimulation() {
             }
         `;
         document.head.appendChild(style);
+    } else {
+        statusBadge.classList.remove('closed');
+        statusBadge.classList.add('open');
+        statusBadge.innerHTML = '<span class="status-dot"></span> Ouvert actuellement';
     }
-    
-    // Mise à jour toutes les minutes
-    setInterval(initStatusSimulation, 60000);
 }
 
 // ========== BACK TO TOP ==========
@@ -156,7 +173,7 @@ function initBackToTop() {
     backToTopBtn.className = 'back-to-top';
     backToTopBtn.setAttribute('aria-label', 'Retour en haut');
     document.body.appendChild(backToTopBtn);
-    
+
     const style = document.createElement('style');
     style.textContent = `
         .back-to-top {
@@ -191,16 +208,16 @@ function initBackToTop() {
         }
     `;
     document.head.appendChild(style);
-    
-    window.addEventListener('scroll', function() {
+
+    window.addEventListener('scroll', function () {
         if (window.scrollY > 500) {
             backToTopBtn.classList.add('show');
         } else {
             backToTopBtn.classList.remove('show');
         }
-    });
-    
-    backToTopBtn.addEventListener('click', function() {
+    }, { passive: true });
+
+    backToTopBtn.addEventListener('click', function () {
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
@@ -210,7 +227,7 @@ function initBackToTop() {
 
 // ========== COPY TO CLIPBOARD (pour les numéros de téléphone) ==========
 document.querySelectorAll('.contact-info-content p').forEach(info => {
-    info.addEventListener('click', function() {
+    info.addEventListener('click', function () {
         const phoneRegex = /\+243 \d{3} \d{3} \d{3}/;
         const match = this.textContent.match(phoneRegex);
         if (match) {
@@ -227,11 +244,11 @@ function showToast(message) {
     toast.className = 'toast-notification';
     toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
     document.body.appendChild(toast);
-    
+
     setTimeout(() => {
         toast.classList.add('show');
     }, 100);
-    
+
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);

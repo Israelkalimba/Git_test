@@ -261,12 +261,12 @@ $jour_fr = $jours_fr[$jour_semaine] ?? $jour_semaine;
                     <!-- Par faculté -->
                     <div class="rapport-card">
                         <div class="rapport-card-header">
-                            <h4><i class="fas fa-university"></i> Par Faculté</h4>
+                            <h4><i class="fas fa-university"></i> Par Département</h4>
                         </div>
                         <div class="rapport-card-body">
                             <table class="table table-sm rapport-table">
                                 <thead>
-                                    <tr><th>Faculté</th><th>Nb</th><th>Montant</th></tr>
+                                    <tr><th>Département</th><th>Nb</th><th>Montant</th></tr>
                                 </thead>
                                 <tbody>
                                     <?php if (empty($paiements_par_faculte)): ?>

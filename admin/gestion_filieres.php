@@ -177,7 +177,7 @@ $navbar_notifications = $stmt->fetchAll();
                             </h1>
                             <p class="page-subtitle">
                                 <i class="fas fa-info-circle"></i> 
-                                Gérez les filières rattachées à chaque faculté. Chaque étudiant est inscrit dans une filière.
+                                Gérez les filières rattachées à chaque Departement. Chaque étudiant est inscrit dans une filière.
                             </p>
                         </div>
                         <div class="col-lg-5 text-lg-end mt-3 mt-lg-0">
@@ -233,7 +233,7 @@ $navbar_notifications = $stmt->fetchAll();
 
                 <!-- Filtres rapides par faculté -->
                 <div class="filtres-rapides">
-                    <span class="filtres-label"><i class="fas fa-filter"></i> Filtrer par faculté :</span>
+                    <span class="filtres-label"><i class="fas fa-filter"></i> Filtrer par Departement :</span>
                     <a href="gestion_filieres.php" class="filtre-btn <?= $faculte_filter === 0 ? 'active' : '' ?>">
                         Toutes
                     </a>
@@ -263,7 +263,7 @@ $navbar_notifications = $stmt->fetchAll();
                                 <tr>
                                     <th width="70">#ID</th>
                                     <th>Nom de la filière</th>
-                                    <th width="200">Faculté</th>
+                                    <th width="200">Departement</th>
                                     <th width="100">Étudiants</th>
                                     <th width="100">Frais</th>
                                     <th width="180">Actions</th>
@@ -371,15 +371,15 @@ $navbar_notifications = $stmt->fetchAll();
                                 <i class="fas fa-layer-group"></i> Nom de la filière <span class="text-danger">*</span>
                             </label>
                             <input type="text" class="form-control form-control-lg" id="nomFiliereAjout" 
-                                   name="nom_filiere" placeholder="Ex: Génie Logiciel" required autofocus>
+                                   name="nom_filiere" placeholder="Ex: sage femme" required autofocus>
                         </div>
                         
                         <div class="form-group">
                             <label for="faculteAjout" class="form-label">
-                                <i class="fas fa-university"></i> Faculté de rattachement <span class="text-danger">*</span>
+                                <i class="fas fa-university"></i> Departement de rattachement <span class="text-danger">*</span>
                             </label>
                             <select class="form-select form-control-lg" id="faculteAjout" name="id_faculte" required>
-                                <option value="">-- Choisir une faculté --</option>
+                                <option value="">-- Choisir un Departement --</option>
                                 <?php foreach ($facultes as $fac): ?>
                                     <option value="<?= $fac['id_faculte'] ?>" <?= $faculte_filter === (int)$fac['id_faculte'] ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($fac['nom_faculte']) ?>

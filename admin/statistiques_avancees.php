@@ -240,7 +240,7 @@ if ($filtre_faculte > 0) {
                                     <?php endforeach; ?>
                                 </select>
                                 <select name="faculte" class="form-select form-select-sm" style="width:auto;" onchange="this.form.submit()">
-                                    <option value="">Toutes facultés</option>
+                                    <option value="">Tous Départements</option>
                                     <?php foreach ($facultes as $fac): ?>
                                         <option value="<?= $fac['id_faculte'] ?>" <?= $filtre_faculte === (int)$fac['id_faculte'] ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($fac['nom_faculte']) ?>
@@ -283,7 +283,7 @@ if ($filtre_faculte > 0) {
                     </div>
                     <div class="chart-card">
                         <div class="chart-card-header">
-                            <h3><i class="fas fa-university"></i> Répartition par Faculté</h3>
+                            <h3><i class="fas fa-university"></i> Répartition par Departement</h3>
                         </div>
                         <div class="chart-card-body">
                             <canvas id="chartFacultes"></canvas>

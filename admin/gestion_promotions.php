@@ -148,7 +148,7 @@ $navbar_notifications = $stmt->fetchAll();
                             </h1>
                             <p class="page-subtitle">
                                 <i class="fas fa-info-circle"></i> 
-                                Les promotions définissent les niveaux d'études (Préparatoire, BAC 1, BAC 2, etc.). 
+                                Les promotions définissent les niveaux d'études ( BAC 1, BAC 2, etc.). 
                                 Elles sont utilisées pour configurer les frais académiques et classer les étudiants.
                             </p>
                         </div>
@@ -337,8 +337,8 @@ $navbar_notifications = $stmt->fetchAll();
                         <div class="info-card-text">
                             <h5>Comment ça fonctionne ?</h5>
                             <p>Les promotions sont utilisées pour définir les frais académiques par niveau. 
-                               Par exemple, une « Licence 2 » en « Informatique » peut avoir des frais différents 
-                               d'une « Licence 3 » dans la même filière. Configurez les frais après avoir créé vos promotions.</p>
+                               Par exemple, une « BAC 2 » en « Informatique » peut avoir des frais différents 
+                               d'une « BAC 3 » dans la même filière. Configurez les frais après avoir créé vos promotions.</p>
                         </div>
                     </div>
                 </div>

@@ -304,7 +304,7 @@ $navbar_notifications = $stmt->fetchAll();
                             </h1>
                             <p class="page-subtitle">
                                 <i class="fas fa-info-circle"></i> 
-                                Définissez les frais par <strong>Faculté → Filière → Promotion</strong>. 
+                                Définissez les frais par <strong>Departement → Filière → Promotion</strong>. 
                                 Taux de référence : <strong class="text-primary" id="tauxReference">1 $ = <?= number_format($taux_defaut, 0, ',', ' ') ?> FC</strong>
                             </p>
                         </div>
@@ -366,9 +366,9 @@ $navbar_notifications = $stmt->fetchAll();
                     <form method="GET" action="" class="filtres-form">
                         <div class="row g-2 align-items-end">
                             <div class="col-lg-3 col-md-4 mb-2">
-                                <label class="filtre-label"><i class="fas fa-university"></i> Faculté</label>
+                                <label class="filtre-label"><i class="fas fa-university"></i> Departement </label>
                                 <select name="faculte" class="form-select form-select-sm" onchange="this.form.submit()">
-                                    <option value="">Toutes les facultés</option>
+                                    <option value="">Tous les Departements </option>
                                     <?php foreach ($facultes as $fac): ?>
                                         <option value="<?= $fac['id_faculte'] ?>" <?= $filtre_faculte === (int)$fac['id_faculte'] ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($fac['nom_faculte']) ?>
@@ -420,7 +420,7 @@ $navbar_notifications = $stmt->fetchAll();
                             <thead>
                                 <tr>
                                     <th>Type de Frais</th>
-                                    <th>Faculté</th>
+                                    <th>Departement</th>
                                     <th>Filière</th>
                                     <th>Promotion</th>
                                     <th>USD</th>
@@ -513,9 +513,9 @@ $navbar_notifications = $stmt->fetchAll();
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label"><i class="fas fa-university"></i> Faculté</label>
+                                <label class="form-label"><i class="fas fa-university"></i> Departement </label>
                                 <select class="form-select" id="selectFaculteAjout" onchange="chargerFilieresAjout()">
-                                    <option value="">-- Choisir une faculté --</option>
+                                    <option value="">-- Choisir un Departement --</option>
                                     <?php foreach ($facultes as $fac): ?>
                                         <option value="<?= $fac['id_faculte'] ?>"><?= htmlspecialchars($fac['nom_faculte']) ?></option>
                                     <?php endforeach; ?>

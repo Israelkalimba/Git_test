@@ -19,17 +19,17 @@ $error = '';
 // Traitement de la confirmation de déconnexion
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_logout'])) {
     $password = $_POST['password'] ?? '';
-    
+
     if (empty($password)) {
         $error = "Veuillez saisir votre mot de passe pour quitter.";
     } else {
         $hashed = hash('sha256', $password);
-        
+
         // Vérifier le mot de passe dans la base
         $stmt = $db->prepare("SELECT mot_de_passe FROM utilisateurs WHERE id_utilisateur = :id");
         $stmt->execute(['id' => $user_id]);
         $user = $stmt->fetch();
-        
+
         if ($user && $user['mot_de_passe'] === $hashed) {
             // 1. Journaliser la déconnexion
             $stmt = $db->prepare("INSERT INTO audit_log (id_utilisateur, type_action, action, description, adresse_ip) VALUES (:uid, 'deconnexion', 'logout_confirme', :desc, :ip)");
@@ -38,13 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_logout'])) {
                 'desc' => "Déconnexion sécurisée de l'utilisateur {$user_nom}",
                 'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
             ]);
-            
+
             // 2. Détruire la session
             Auth::logout(); // Cette méthode dans Auth.php redirige déjà vers index.php
             exit();
         } else {
             $error = "Mot de passe incorrect. Déconnexion refusée.";
-            
+
             // Journaliser la tentative échouée de déconnexion (Alerte sécurité)
             $stmt = $db->prepare("INSERT INTO audit_log (id_utilisateur, type_action, action, description, adresse_ip) VALUES (:uid, 'securite', 'logout_echoue', 'Tentative de déconnexion avec mauvais mot de passe', :ip)");
             $stmt->execute(['uid' => $user_id, 'ip' => $_SERVER['REMOTE_ADDR']]);
@@ -60,6 +60,7 @@ elseif ($role === 'etudiant') $back_url = 'etudiant/dashboard.php';
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,6 +69,7 @@ elseif ($role === 'etudiant') $back_url = 'etudiant/dashboard.php';
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/logout.css">
 </head>
+
 <body class="role-<?= $role ?>">
     <div class="lock-screen">
         <div class="lock-container">
@@ -96,10 +98,10 @@ elseif ($role === 'etudiant') $back_url = 'etudiant/dashboard.php';
 
                 <form method="POST" action="">
                     <div class="mb-4">
-                        <input type="password" name="password" class="form-control lock-input" 
-                               placeholder="Mot de passe" required autofocus>
+                        <input type="password" name="password" class="form-control lock-input"
+                            placeholder="Mot de passe" required autofocus>
                     </div>
-                    
+
                     <div class="d-grid gap-2">
                         <button type="submit" name="confirm_logout" class="btn btn-logout">
                             <i class="fas fa-sign-out-alt"></i> Confirmer la déconnexion
@@ -110,17 +112,20 @@ elseif ($role === 'etudiant') $back_url = 'etudiant/dashboard.php';
                     </div>
                 </form>
             </div>
-            
+
             <div class="lock-footer">
                 <p>&copy; <?= date('Y') ?> ISTAM Paiement - Système de Protection Active</p>
             </div>
         </div>
     </div>
-    
     <script>
         // Empêcher le retour en arrière après déconnexion
         window.history.forward();
-        function noBack() { window.history.forward(); }
+
+        function noBack() {
+            window.history.forward();
+        }
     </script>
 </body>
+
 </html>

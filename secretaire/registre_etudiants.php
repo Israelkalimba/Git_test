@@ -207,9 +207,9 @@ $navbar_notifications = $stmt->fetchAll();
                     <form method="GET" action="" class="filtres-form">
                         <div class="row g-2 align-items-end">
                             <div class="col-lg-2 col-md-3 col-sm-6 mb-2">
-                                <label class="filtre-label"><i class="fas fa-university"></i> Faculté</label>
+                                <label class="filtre-label"><i class="fas fa-university"></i> Département</label>
                                 <select name="faculte" class="form-select form-select-sm" onchange="this.form.submit()">
-                                    <option value="">Toutes</option>
+                                    <option value="">Tous</option>
                                     <?php foreach ($facultes as $fac): ?>
                                         <option value="<?= $fac['id_faculte'] ?>" <?= $filtre_faculte === (int)$fac['id_faculte'] ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($fac['nom_faculte']) ?>
@@ -287,7 +287,7 @@ $navbar_notifications = $stmt->fetchAll();
                                     <th>Nom</th>
                                     <th>Email</th>
                                     <th>Téléphone</th>
-                                    <th>Faculté</th>
+                                    <th>Département</th>
                                     <th>Filière</th>
                                     <th>Promotion</th>
                                     <th>Nb Paiements</th>

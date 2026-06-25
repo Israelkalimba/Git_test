@@ -45,7 +45,7 @@ $admin_nom_side = $_SESSION['user_nom'] ?? 'Admin';
             <li class="menu-item">
                 <a href="gestion_facultes.php" class="menu-link <?= $current === 'gestion_facultes.php' ? 'active' : '' ?>">
                     <i class="fas fa-university"></i>
-                    <span>Sections</span>
+                    <span>Département</span>
                     <?php if ($current === 'gestion_facultes.php'): ?>
                         <span class="active-bar"></span>
                     <?php endif; ?>

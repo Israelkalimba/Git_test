@@ -4,11 +4,13 @@ require_once 'config.php';
 /**
  * Classe Database : Gère la connexion unique à la base de données via PDO
  */
-class Database {
+class Database
+{
     private static $instance = null;
     private $conn;
 
-    private function __construct() {
+    private function __construct()
+    {
         try {
             $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
             $this->conn = new PDO($dsn, DB_USER, DB_PASS, [
@@ -23,7 +25,8 @@ class Database {
     }
 
     // Méthode pour récupérer l'instance unique de connexion
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance === null) {
             self::$instance = new self();
         }

@@ -20,7 +20,7 @@ $message_type = '';
 // VÉRIFIER LE STATUT RÉEL AUPRÈS DE PAYLEDGER
 if (isset($_GET['action']) && $_GET['action'] === 'verifier_statut' && isset($_GET['ref'])) {
     $reference = trim($_GET['ref']);
-    
+
     // Appel à l'API PayLedger pour vérifier le statut réel
     $ch = curl_init($api_base_url . '/status/' . urlencode($reference));
     curl_setopt_array($ch, [
@@ -31,26 +31,26 @@ if (isset($_GET['action']) && $_GET['action'] === 'verifier_statut' && isset($_G
         ],
         CURLOPT_TIMEOUT => 15
     ]);
-    
+
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    
+
     if ($httpCode === 200) {
         $data = json_decode($response, true);
         $statut_api = $data['status'] ?? 'unknown';
-        
+
         // Mettre à jour dans notre base
         if (in_array($statut_api, ['successful', 'failed', 'cancelled', 'expired'])) {
             $notre_statut = ($statut_api === 'successful') ? 'succes' : 'echec';
-            
+
             $stmt = $db->prepare("UPDATE paiements SET statut = :statut WHERE reference_transaction = :ref AND statut = 'en_attente'");
             $stmt->execute(['statut' => $notre_statut, 'ref' => $reference]);
-            
+
             // Mettre à jour aussi la table transaction_mobile_money
             $stmt = $db->prepare("UPDATE transaction_mobile_money tmm JOIN paiements p ON tmm.id_paiement = p.id_paiement SET tmm.statut_api = :statut_api WHERE p.reference_transaction = :ref");
             $stmt->execute(['statut_api' => $statut_api, 'ref' => $reference]);
-            
+
             if ($stmt->rowCount() > 0) {
                 $message = "✅ Statut mis à jour depuis PayLedger : <strong>" . ucfirst($statut_api) . "</strong>. Le paiement est maintenant marqué comme <strong>" . ($notre_statut === 'succes' ? 'Réussi' : 'Échec') . "</strong>.";
                 $message_type = 'success';
@@ -75,28 +75,28 @@ if (isset($_GET['action']) && $_GET['action'] === 'verifier_statut' && isset($_G
 if (isset($_GET['action']) && $_GET['action'] === 'forcer_succes' && isset($_GET['id'])) {
     $id_paiement = (int)$_GET['id'];
     $justificatif = trim($_GET['justificatif'] ?? '');
-    
+
     if (empty($justificatif)) {
         $message = "❌ Veuillez fournir un justificatif (SMS, référence, motif).";
         $message_type = 'danger';
     } else {
         try {
             $db->beginTransaction();
-            
+
             // Récupérer les infos
             $stmt = $db->prepare("SELECT p.*, u.nom, u.email, e.matricule FROM paiements p JOIN etudiants e ON p.id_etudiant = e.id_etudiant JOIN utilisateurs u ON e.id_utilisateur = u.id_utilisateur WHERE p.id_paiement = :id");
             $stmt->execute(['id' => $id_paiement]);
             $paiement = $stmt->fetch();
-            
+
             if ($paiement) {
                 // Mettre à jour le statut
                 $stmt = $db->prepare("UPDATE paiements SET statut = 'succes' WHERE id_paiement = :id AND statut IN ('en_attente', 'echec')");
                 $stmt->execute(['id' => $id_paiement]);
-                
+
                 // Mettre à jour la transaction mobile money
                 $stmt = $db->prepare("UPDATE transaction_mobile_money SET statut_api = 'succes' WHERE id_paiement = :id");
                 $stmt->execute(['id' => $id_paiement]);
-                
+
                 // Ajouter au journal d'audit
                 $stmt = $db->prepare("INSERT INTO audit_log (id_utilisateur, type_action, action, description, adresse_ip) VALUES (:uid, 'validation', 'validation_manuelle', :desc, :ip)");
                 $stmt->execute([
@@ -104,7 +104,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'forcer_succes' && isset($_GET
                     'desc' => "Validation manuelle par {$secretaire_nom} - Paiement #{$id_paiement} ({$paiement['nom']} - {$paiement['matricule']} - \${$paiement['montant_paye']}) - Justificatif: {$justificatif}",
                     'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
                 ]);
-                
+
                 $db->commit();
                 $message = "✅ Paiement #{$id_paiement} validé manuellement avec succès pour <strong>{$paiement['nom']}</strong>.";
                 $message_type = 'success';
@@ -121,21 +121,21 @@ if (isset($_GET['action']) && $_GET['action'] === 'forcer_succes' && isset($_GET
 if (isset($_GET['action']) && $_GET['action'] === 'rejeter' && isset($_GET['id'])) {
     $id_paiement = (int)$_GET['id'];
     $motif = trim($_GET['motif'] ?? '');
-    
+
     if (empty($motif)) {
         $message = "❌ Veuillez fournir un motif de rejet.";
         $message_type = 'danger';
     } else {
         $stmt = $db->prepare("UPDATE paiements SET statut = 'echec' WHERE id_paiement = :id AND statut = 'en_attente'");
         $stmt->execute(['id' => $id_paiement]);
-        
+
         $stmt = $db->prepare("INSERT INTO audit_log (id_utilisateur, type_action, action, description, adresse_ip) VALUES (:uid, 'validation', 'rejet_manuel', :desc, :ip)");
         $stmt->execute([
             'uid' => $secretaire_id,
             'desc' => "Rejet manuel par {$secretaire_nom} - Paiement #{$id_paiement} - Motif: {$motif}",
             'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1'
         ]);
-        
+
         $message = "⚠️ Paiement #{$id_paiement} rejeté. Motif : {$motif}";
         $message_type = 'warning';
     }
@@ -145,10 +145,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'rejeter' && isset($_GET['id']
 if (isset($_GET['action']) && $_GET['action'] === 'verifier_tout') {
     $compteur_succes = 0;
     $compteur_echec = 0;
-    
+
     $stmt = $db->query("SELECT p.id_paiement, p.reference_transaction FROM paiements p WHERE p.statut = 'en_attente' AND p.date_paiement < DATE_SUB(NOW(), INTERVAL 5 MINUTE) LIMIT 20");
     $transactions_en_attente = $stmt->fetchAll();
-    
+
     foreach ($transactions_en_attente as $tr) {
         // Vérifier chaque transaction auprès de PayLedger
         $ch = curl_init($api_base_url . '/status/' . urlencode($tr['reference_transaction']));
@@ -160,11 +160,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'verifier_tout') {
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-        
+
         if ($httpCode === 200) {
             $data = json_decode($response, true);
             $statut_api = $data['status'] ?? '';
-            
+
             if ($statut_api === 'successful') {
                 $stmt = $db->prepare("UPDATE paiements SET statut = 'succes' WHERE id_paiement = :id");
                 $stmt->execute(['id' => $tr['id_paiement']]);
@@ -176,7 +176,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'verifier_tout') {
             }
         }
     }
-    
+
     $total = $compteur_succes + $compteur_echec;
     $message = "🔍 Vérification terminée : <strong>{$total}</strong> transaction(s) traitée(s). <br>✅ {$compteur_succes} succès | ❌ {$compteur_echec} échecs";
     $message_type = $total > 0 ? 'success' : 'info';
@@ -230,27 +230,29 @@ $navbar_notifications = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Validation des Paiements - Secrétaire ISTAM</title>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/secretaire/dashboard_secretaire.css">
     <link rel="stylesheet" href="../assets/css/secretaire/validation_paiements.css">
 </head>
+
 <body>
     <div class="secretaire-layout">
         <?php include 'includes/sidebar_secretaire.php'; ?>
         <div class="main-content">
-            <?php 
+            <?php
             $navbar_notif_non_lues = $notifications_non_lues;
-            include 'includes/navbar_secretaire.php'; 
+            include 'includes/navbar_secretaire.php';
             ?>
             <main class="dashboard-content">
-                
+
                 <!-- En-tête -->
                 <div class="page-header">
                     <div class="row align-items-center">
@@ -259,8 +261,8 @@ $navbar_notifications = $stmt->fetchAll();
                                 <i class="fas fa-check-double"></i> Validation des Paiements
                             </h1>
                             <p class="page-subtitle">
-                                <i class="fas fa-info-circle"></i> 
-                                Panneau de contrôle manuel pour les transactions bloquées. 
+                                <i class="fas fa-info-circle"></i>
+                                Panneau de contrôle manuel pour les transactions bloquées.
                                 <span class="text-warning fw-bold"><?= $total_attente ?> en attente</span>
                             </p>
                         </div>
@@ -322,10 +324,10 @@ $navbar_notifications = $stmt->fetchAll();
                     <a href="?anciennete=tous" class="filtre-pill <?= $filtre_anciennete === 'tous' ? 'active' : '' ?>">Tous</a>
                     <a href="?anciennete=recent" class="filtre-pill <?= $filtre_anciennete === 'recent' ? 'active' : '' ?>">
                         <i class="fas fa-circle text-success"></i> Récents (< 30 min)
-                    </a>
-                    <a href="?anciennete=ancien" class="filtre-pill <?= $filtre_anciennete === 'ancien' ? 'active' : '' ?>">
-                        <i class="fas fa-circle text-danger"></i> Anciens (> 30 min) ⚠️
-                    </a>
+                            </a>
+                            <a href="?anciennete=ancien" class="filtre-pill <?= $filtre_anciennete === 'ancien' ? 'active' : '' ?>">
+                                <i class="fas fa-circle text-danger"></i> Anciens (> 30 min) ⚠️
+                            </a>
                 </div>
 
                 <!-- Tableau des paiements en attente -->
@@ -361,7 +363,7 @@ $navbar_notifications = $stmt->fetchAll();
                                         </td>
                                     </tr>
                                 <?php else: ?>
-                                    <?php foreach ($paiements_attente as $p): 
+                                    <?php foreach ($paiements_attente as $p):
                                         $estAncien = strtotime($p['date_paiement']) < strtotime('-30 minutes');
                                     ?>
                                         <tr class="val-row <?= $estAncien ? 'row-ancien' : '' ?>">
@@ -397,23 +399,22 @@ $navbar_notifications = $stmt->fetchAll();
                                             </td>
                                             <td>
                                                 <div class="action-group">
-                                                    <!-- Vérifier auprès de PayLedger -->
+                                                    <!-- Vérifier auprès de PayLedger 
                                                     <a href="?action=verifier_statut&ref=<?= urlencode($p['reference_transaction']) ?>" 
                                                        class="btn btn-sm btn-info" title="Vérifier le statut réel auprès de PayLedger">
                                                         <i class="fas fa-sync-alt"></i> Vérifier API
-                                                    </a>
-                                                    
+                                                    </a> -->
                                                     <!-- Forcer succès (avec justificatif) -->
-                                                    <button class="btn btn-sm btn-success" 
-                                                            onclick="forcerSucces(<?= $p['id_paiement'] ?>, '<?= htmlspecialchars(addslashes($p['nom_etudiant'])) ?>', '<?= htmlspecialchars(addslashes($p['matricule'])) ?>')"
-                                                            title="Forcer la validation (justificatif requis)">
+                                                    <button class="btn btn-sm btn-success"
+                                                        onclick="forcerSucces(<?= $p['id_paiement'] ?>, '<?= htmlspecialchars(addslashes($p['nom_etudiant'])) ?>', '<?= htmlspecialchars(addslashes($p['matricule'])) ?>')"
+                                                        title="Forcer la validation (justificatif requis)">
                                                         <i class="fas fa-check"></i> Valider
                                                     </button>
-                                                    
+
                                                     <!-- Rejeter -->
-                                                    <button class="btn btn-sm btn-danger" 
-                                                            onclick="rejeterPaiement(<?= $p['id_paiement'] ?>, '<?= htmlspecialchars(addslashes($p['nom_etudiant'])) ?>')"
-                                                            title="Rejeter ce paiement">
+                                                    <button class="btn btn-sm btn-danger"
+                                                        onclick="rejeterPaiement(<?= $p['id_paiement'] ?>, '<?= htmlspecialchars(addslashes($p['nom_etudiant'])) ?>')"
+                                                        title="Rejeter ce paiement">
                                                         <i class="fas fa-times"></i> Rejeter
                                                     </button>
                                                 </div>
@@ -431,34 +432,37 @@ $navbar_notifications = $stmt->fetchAll();
                     <h6><i class="fas fa-info-circle"></i> Guide des actions</h6>
                     <div class="legend-items">
                         <div class="legend-item">
+                            <!--
                             <span class="legend-icon bg-info"><i class="fas fa-sync-alt"></i></span>
                             <div>
+                                
                                 <strong>Vérifier API</strong>
-                                <p>Interroge PayLedger pour connaître le statut réel de la transaction.</p>
-                            </div>
+                                <p>Interroge PayLedger pour connaître le statut réel de la transaction.</p> -->
                         </div>
-                        <div class="legend-item">
-                            <span class="legend-icon bg-success"><i class="fas fa-check"></i></span>
-                            <div>
-                                <strong>Valider (forcer succès)</strong>
-                                <p>Confirme manuellement le paiement. <strong>Un justificatif est obligatoire</strong> (SMS, référence, motif).</p>
-                            </div>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-icon bg-success"><i class="fas fa-check"></i></span>
+                        <div>
+                            <strong>Valider (forcer succès)</strong>
+                            <p>Confirme manuellement le paiement. <strong>Un justificatif est obligatoire</strong> (SMS, référence, motif).</p>
                         </div>
-                        <div class="legend-item">
-                            <span class="legend-icon bg-danger"><i class="fas fa-times"></i></span>
-                            <div>
-                                <strong>Rejeter</strong>
-                                <p>Annule la transaction. Un motif de rejet est requis pour l'audit.</p>
-                            </div>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-icon bg-danger"><i class="fas fa-times"></i></span>
+                        <div>
+                            <strong>Rejeter</strong>
+                            <p>Annule la transaction. Un motif de rejet est requis pour l'audit.</p>
                         </div>
                     </div>
                 </div>
-            </main>
         </div>
+        </main>
+    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/secretaire/dashboard_secretaire.js"></script>
     <script src="../assets/js/secretaire/validation_paiements.js"></script>
 </body>
+
 </html>

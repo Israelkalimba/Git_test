@@ -250,9 +250,9 @@ $mois_labels = [
                     <form method="GET" action="" class="filtres-form">
                         <div class="row g-2 align-items-end">
                             <div class="col-lg-2 col-md-3 col-sm-6 mb-2">
-                                <label class="filtre-label"><i class="fas fa-university"></i> Faculté</label>
+                                <label class="filtre-label"><i class="fas fa-university"></i> Département</label>
                                 <select name="faculte" class="form-select form-select-sm">
-                                    <option value="">Toutes</option>
+                                    <option value="">Tous</option>
                                     <?php foreach ($facultes as $fac): ?>
                                         <option value="<?= $fac['id_faculte'] ?>" <?= $filtre_faculte === (int)$fac['id_faculte'] ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($fac['nom_faculte']) ?>
@@ -410,7 +410,7 @@ $mois_labels = [
                         <div class="table-responsive">
                             <table class="table admin-table">
                                 <thead>
-                                    <tr><th>#</th><th>Filière</th><th>Faculté</th><th>Paiements</th><th>Total</th></tr>
+                                    <tr><th>#</th><th>Filière</th><th>Département</th><th>Paiements</th><th>Total</th></tr>
                                 </thead>
                                 <tbody>
                                     <?php if (empty($top_filieres)): ?>

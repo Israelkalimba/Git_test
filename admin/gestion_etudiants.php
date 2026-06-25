@@ -332,9 +332,9 @@ $navbar_notifications = $stmt->fetchAll();
                     <form method="GET" action="" class="filtres-form" id="formFiltres">
                         <div class="row g-2 align-items-end">
                             <div class="col-lg-2 col-md-3">
-                                <label class="filtre-label"><i class="fas fa-university"></i> Faculté</label>
+                                <label class="filtre-label"><i class="fas fa-university"></i> Departement</label>
                                 <select name="faculte" class="form-select form-select-sm" onchange="this.form.submit()">
-                                    <option value="">Toutes</option>
+                                    <option value="">Tous</option>
                                     <?php foreach ($facultes as $fac): ?>
                                         <option value="<?= $fac['id_faculte'] ?>" <?= $filtre_faculte === (int)$fac['id_faculte'] ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($fac['nom_faculte']) ?>
@@ -522,9 +522,9 @@ $navbar_notifications = $stmt->fetchAll();
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label"><i class="fas fa-university"></i> Faculté <span class="text-danger">*</span></label>
+                                <label class="form-label"><i class="fas fa-university"></i> Departement <span class="text-danger">*</span></label>
                                 <select class="form-select" id="selectFaculteAjout" onchange="chargerFilieresAjout()" required>
-                                    <option value="">-- Choisir une faculté --</option>
+                                    <option value="">-- Choisir un Departement --</option>
                                     <?php foreach ($facultes as $fac): ?>
                                         <option value="<?= $fac['id_faculte'] ?>"><?= htmlspecialchars($fac['nom_faculte']) ?></option>
                                     <?php endforeach; ?>
